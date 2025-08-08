@@ -1,0 +1,666 @@
+u<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Harshit Engineering Works</title>
+  <meta name="description" content="Manufacturers of high-quality rubber mixer machines for industrial applications">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- AOS CSS -->
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+    }
+    h1, h2, h3, h4 {
+      font-family: 'Montserrat', sans-serif;
+    }
+    .gradient-bg {
+      background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+    }
+    .parallax {
+      background-attachment: fixed;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    .machine-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    .pulse-animation {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800 scroll-smooth">
+
+  <!-- Header -->
+  <header class="gradient-bg text-white shadow-lg sticky top-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
+      <div class="flex items-center space-x-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+        <h1 class="text-2xl font-bold">Harshit Engineering<span class="text-yellow-300">Works</span></h1>
+      </div>
+      <nav class="hidden md:flex space-x-8 items-center">
+        <a href="#home" class="hover:text-yellow-300 transition duration-300 relative group">
+          Home
+          <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-yellow-300 transition-all duration-300 group-hover:w-full"></span>
+        </a>
+        <a href="#machines" class="hover:text-yellow-300 transition duration-300 relative group">
+          Machines
+          <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-yellow-300 transition-all duration-300 group-hover:w-full"></span>
+        </a>
+        <a href="#features" class="hover:text-yellow-300 transition duration-300 relative group">
+          Features
+          <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-yellow-300 transition-all duration-300 group-hover:w-full"></span>
+        </a>
+        <a href="#contact" class="hover:text-yellow-300 transition duration-300 relative group">
+          Contact
+          <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-yellow-300 transition-all duration-300 group-hover:w-full"></span>
+        </a>
+        <a href="#contact" class="bg-yellow-400 text-black font-semibold px-6 py-2 rounded-full hover:bg-yellow-500 transition transform hover:scale-105 ml-4">
+          Get Quote
+        </a>
+      </nav>
+      <button class="md:hidden text-2xl focus:outline-none" id="menu-toggle">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div class="md:hidden hidden bg-red-800 w-full px-4 py-2" id="mobile-menu">
+      <div class="flex flex-col space-y-3">
+        <a href="#home" class="block py-2 hover:text-yellow-300">Home</a>
+        <a href="#machines" class="block py-2 hover:text-yellow-300">Machines</a>
+        <a href="#features" class="block py-2 hover:text-yellow-300">Features</a>
+        <a href="#contact" class="block py-2 hover:text-yellow-300">Contact</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="home" class="h-screen flex items-center justify-center parallax" style="background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1602311865240-514c6b25d517?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');">
+    <div class="text-center px-4" data-aos="zoom-in" data-aos-duration="1000">
+      <h2 class="text-4xl md:text-6xl font-bold mb-6 text-white">
+        <span class="inline-block">Welcome</span> 
+        <span class="text-yellow-400 inline-block">Harshit Engineering works</span>
+      </h2>
+      <p class="text-xl md:text-2xl text-gray-200 mb-8 max-w-3xl mx-auto">
+        Precision-engineered mixing solutions for rubber, polymer, and elastomer processing industries
+      </p>
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a href="#machines" class="bg-yellow-400 text-black font-semibold px-8 py-4 rounded-full hover:bg-yellow-500 transition transform hover:scale-105 pulse-animation">
+          Explore Products <i class="fas fa-arrow-right ml-2"></i>
+        </a>
+        <a href="#contact" class="bg-transparent border-2 border-white text-white font-semibold px-8 py-4 rounded-full hover:bg-white hover:text-black transition">
+          Contact Sales <i class="fas fa-phone ml-2"></i>
+        </a>
+      </div>
+    </div>
+    
+    <a href="#machines" class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+      <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+      </svg>
+    </a>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="py-16 bg-white">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div class="p-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="text-4xl font-bold text-red-700 mb-2">250+</div>
+          <div class="text-gray-600">Machines Installed</div>
+        </div>
+        <div class="p-6" data-aos="fade-up" data-aos-delay="200">
+          <div class="text-4xl font-bold text-red-700 mb-2">30+</div>
+          <div class="text-gray-600">Years Experience</div>
+        </div>
+        <div class="p-6" data-aos="fade-up" data-aos-delay="300">
+          <div class="text-4xl font-bold text-red-700 mb-2">15+</div>
+          <div class="text-gray-600">Countries Served</div>
+        </div>
+        <div class="p-6" data-aos="fade-up" data-aos-delay="400">
+          <div class="text-4xl font-bold text-red-700 mb-2">24/7</div>
+          <div class="text-gray-600">Support Available</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Machines Section -->
+  <section id="machines" class="py-20 px-6 bg-gray-50">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4" data-aos="fade-up">
+          Our <span class="text-red-700">Machinery</span> Range
+        </h2>
+        <p class="text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+          High-efficiency mixers designed for industrial rubber applications with precision and durability
+        </p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white p-6 rounded-xl shadow-md machine-card transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
+          <div class="relative overflow-hidden rounded-lg h-48 mb-6">
+            <img src="https://images.unsplash.com/photo-1581093450022-7f44d8f251e8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+                 class="w-full h-full object-cover transition duration-500 hover:scale-110" 
+                 alt="Internal Mixer">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 p-4 text-white">
+              <span class="bg-red-700 text-xs px-2 py-1 rounded">BATCH MIXER</span>
+            </div>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Internal Rubber Mixer</h3>
+          <p class="text-gray-600 mb-4">Advanced batch processing with precise temperature and torque control for consistent rubber compounding.</p>
+          <ul class="space-y-2 mb-6">
+            <li class="flex items-start">
+              <svg class="h-5 w-5 text-red-700 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Capacity: 10L to 500L</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="h-5 w-5 text-red-700 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>PLC controlled operation</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="h-5 w-5 text-red-700 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Energy efficient design</span>
+            </li>
+          </ul>
+          <a href="#contact" class="inline-block bg-red-700 text-white px-6 py-2 rounded-full hover:bg-red-800 transition">
+            Enquire Now
+          </a>
+        </div>
+        
+        <div class="bg-white p-6 rounded-xl shadow-md machine-card transition-all duration-300" data-aos="fade-up" data-aos-delay="300">
+          <div class="relative overflow-hidden rounded-lg h-48 mb-6">
+            <img src="https://images.unsplash.com/photo-1581094271901-8022df4466f9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+                 class="w-full h-full object-cover transition duration-500 hover:scale-110" 
+                 alt="Kneader">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 p-4 text-white">
+              <span class="bg-red-700 text-xs px-2 py-1 rounded">CONTINUOUS</span>
+            </div>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Kneader Mixer</h3>
+          <p class="text-gray-600 mb-4">Specialized design for high-viscosity elastomer and polymer blending with superior dispersion.</p>
+          <ul class="space-y-2 mb-6">
+            <li class="flex items-start">
+              <svg class="h-5 w-5 text-red-700 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Capacity: 5L to 200L</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="h-5 w-5 text-red-700 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Z-type blade configuration</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="h-5 w-5 text-red-700 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Heavy-duty construction</span>
+            </li>
+          </ul>
+          <a href="#contact" class="inline-block bg-red-700 text-white px-6 py-2 rounded-full hover:bg-red-800 transition">
+            Enquire Now
+          </a>
+        </div>
+        
+        <div class="bg-white p-6 rounded-xl shadow-md machine-card transition-all duration-300" data-aos="fade-up" data-aos-delay="400">
+          <div class="relative overflow-hidden rounded-lg h-48 mb-6">
+            <img src="https://images.unsplash.com/photo-1581094272269-6a7ba8a0cdba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+                 class="w-full h-full object-cover transition duration-500 hover:scale-110" 
+                 alt="Extruder">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 p-4 text-white">
+              <span class="bg-red-700 text-xs px-2 py-1 rounded">EXTRUSION</span>
+            </div>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Twin-Screw Extruder</h3>
+          <p class="text-gray-600 mb-4">High-performance extrusion for efficient shaping, degassing and compounding of rubber materials.</p>
+          <ul class="space-y-2 mb-6">
+            <li class="flex items-start">
+              <svg class="h-5 w-5 text-red-700 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Screw diameter: 30-150mm</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="h-5 w-5 text-red-700 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Variable speed control</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="h-5 w-5 text-red-700 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Multiple heating zones</span>
+            </li>
+          </ul>
+          <a href="#contact" class="inline-block bg-red-700 text-white px-6 py-2 rounded-full hover:bg-red-800 transition">
+            Enquire Now
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4" data-aos="fade-up">
+          Why Choose <span class="text-red-700">MechMix</span>
+        </h2>
+        <p class="text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+          Our commitment to quality and innovation sets us apart in the rubber machinery industry
+        </p>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-12">
+        <div class="flex" data-aos="fade-right">
+          <div class="mr-6">
+            <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center">
+              <svg class="w-8 h-8 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold mb-3">High Performance</h3>
+            <p class="text-gray-600">Our machines deliver superior mixing efficiency with reduced energy consumption, lowering your operational costs.</p>
+          </div>
+        </div>
+        
+        <div class="flex" data-aos="fade-left" data-aos-delay="100">
+          <div class="mr-6">
+            <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center">
+              <svg class="w-8 h-8 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+              </svg>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold mb-3">Robust Construction</h3>
+            <p class="text-gray-600">Built with premium materials and components to withstand the toughest industrial environments.</p>
+          </div>
+        </div>
+        
+        <div class="flex" data-aos="fade-right" data-aos-delay="200">
+          <div class="mr-6">
+            <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center">
+              <svg class="w-8 h-8 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+              </svg>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold mb-3">Precision Engineering</h3>
+            <p class="text-gray-600">Every component is precision-engineered for optimal performance and long service life.</p>
+          </div>
+        </div>
+        
+        <div class="flex" data-aos="fade-left" data-aos-delay="300">
+          <div class="mr-6">
+            <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center">
+              <svg class="w-8 h-8 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path>
+              </svg>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold mb-3">Smart Automation</h3>
+            <p class="text-gray-600">Advanced PLC controls with touchscreen interfaces for precise process control and monitoring.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="py-20 bg-gray-50">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4" data-aos="fade-up">
+          What Our <span class="text-red-700">Clients</span> Say
+        </h2>
+        <p class="text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+          Trusted by rubber manufacturers worldwide
+        </p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white p-8 rounded-xl shadow-md" data-aos="fade-up" data-aos-delay="200">
+          <div class="flex items-center mb-4">
+            <div class="text-yellow-400 mr-2">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+          </div>
+          <p class="text-gray-600 mb-6">"The MechMix internal mixer has doubled our production capacity while reducing energy costs by 30%. Their after-sales support is exceptional."</p>
+          <div class="flex items-center">
+       <div class="bg-gray-200 w-12 h-12 rounded-full overflow-hidden mr-4">
+              <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Client" class="w-full h-full object-cover">
+            </div>
+            <div>
+              <h4 class="font-semibold">Rajesh Patel</h4>
+              <p class="text-sm text-gray-500">ABC Rubber Industries</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white p-8 rounded-xl shadow-md" data-aos="fade-up" data-aos-delay="300">
+          <div class="flex items-center mb-4">
+            <div class="text-yellow-400 mr-2">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star-half-alt"></i>
+            </div>
+          </div>
+          <p class="text-gray-600 mb-6">"We've been using MechMix kneaders for 5 years now. The machine reliability and consistency in mixing quality is unmatched in the industry."</p>
+          <div class="flex items-center">
+            <div class="bg-gray-200 w-12 h-12 rounded-full overflow-hidden mr-4">
+              <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Client" class="w-full h-full object-cover">
+            </div>
+            <div>
+              <h4 class="font-semibold">Priya Sharma</h4>
+              <p class="text-sm text-gray-500">XYZ Polymer Solutions</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white p-8 rounded-xl shadow-md" data-aos="fade-up" data-aos-delay="400">
+          <div class="flex items-center mb-4">
+            <div class="text-yellow-400 mr-2">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+          </div>
+          <p class="text-gray-600 mb-6">"The twin-screw extruder from MechMix has revolutionized our production line with its precision and efficiency. Highly recommended!"</p>
+          <div class="flex items-center">
+            <div class="bg-gray-200 w-12 h-12 rounded-full overflow-hidden mr-4">
+              <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Client" class="w-full h-full object-cover">
+            </div>
+            <div>
+              <h4 class="font-semibold">Amit Kumar</h4>
+              <p class="text-sm text-gray-500">Elasto Tech Ltd.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-16 gradient-bg text-white">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-6" data-aos="fade-up">
+        Ready to Upgrade Your Rubber Mixing Process?
+      </h2>
+      <p class="text-xl mb-8 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+        Our experts are ready to help you select the perfect machine for your needs.
+      </p>
+      <div class="flex flex-col sm:flex-row justify-center gap-4" data-aos="fade-up" data-aos-delay="200">
+        <a href="#contact" class="bg-white text-red-700 font-semibold px-8 py-4 rounded-full hover:bg-gray-100 transition transform hover:scale-105">
+          Get a Free Consultation <i class="fas fa-phone-alt ml-2"></i>
+        </a>
+        <a href="tel:+91-9811019011" class="bg-transparent border-2 border-white font-semibold px-8 py-4 rounded-full hover:bg-white hover:text-red-700 transition">
+          Call Now: +91-9811019011
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4" data-aos="fade-up">
+          Get In <span class="text-red-700">Touch</span>
+        </h2>
+        <p class="text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+          Have questions about our machines? Contact our sales team today.
+        </p>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-12">
+        <div data-aos="fade-right">
+          <h3 class="text-2xl font-semibold mb-6">Contact Information</h3>
+          
+          <div class="space-y-6">
+            <div class="flex items-start">
+              <div class="bg-red-100 p-3 rounded-full mr-4">
+                <svg class="w-6 h-6 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                </svg>
+              </div>
+              <div>
+                <h4 class="font-semibold">Phone</h4>
+                <p class="text-gray-600">+91-9811010011</p>
+                <p class="text-gray-600">+91-9868883132</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start">
+              <div class="bg-red-100 p-3 rounded-full mr-4">
+                <svg class="w-6 h-6 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+              </div>
+              <div>
+                <h4 class="font-semibold">Email</h4>
+                <p class="text-gray-600">rgupta889@Gmail.com</p>
+                <p class="text-gray-600">harshitengineeringwork@Gmail.com</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start">
+              <div class="bg-red-100 p-3 rounded-full mr-4">
+                <svg class="w-6 h-6 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+              </div>
+              <div>
+                <h4 class="font-semibold">Address</h4>
+                <p class="text-gray-600">C-41 Adyapak Nagar opp hanuman mandir najafghar road</p>
+                <p class="text-gray-600">nangloi, west Delhi - 110041</p>
+                <p class="text-gray-600">India</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-8">
+            <h4 class="font-semibold mb-4">Follow Us</h4>
+            <div class="flex space-x-4">
+              <a href="#" class="bg-gray-100 w-10 h-10 rounded-full flex items-center justify-center text-gray-700 hover:bg-red-700 hover:text-white transition">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" class="bg-gray-100 w-10 h-10 rounded-full flex items-center justify-center text-gray-700 hover:bg-red-700 hover:text-white transition">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" class="bg-gray-100 w-10 h-10 rounded-full flex items-center justify-center text-gray-700 hover:bg-red-700 hover:text-white transition">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+              <a href="#" class="bg-gray-100 w-10 h-10 rounded-full flex items-center justify-center text-gray-700 hover:bg-red-700 hover:text-white transition">
+                <i class="fab fa-youtube"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <div data-aos="fade-left" data-aos-delay="100">
+          <h3 class="text-2xl font-semibold mb-6">Send Us a Message</h3>
+          <form class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <input type="text" id="name" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition">
+              </div>
+              <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input type="email" id="email" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition">
+              </div>
+            </div>
+            <div>
+              <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+              <input type="tel" id="phone" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition">
+            </div>
+            <div>
+              <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+              <input type="text" id="subject" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition">
+            </div>
+            <div>
+              <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+              <textarea id="message" rows="4" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-red-700 text-white font-semibold px-6 py-3 rounded-lg hover:bg-red-800 transition transform hover:scale-[1.01]">
+              Send Message <i class="fas fa-paper-plane ml-2"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white pt-12 pb-6">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="grid md:grid-cols-4 gap-8 mb-8">
+        <div>
+          <h3 class="text-xl font-bold mb-4">Harshit Engineering Works</h3>
+          <p class="text-gray-400">Leading manufacturers of rubber mixing machinery since 1995, delivering quality and innovation to industries worldwide.</p>
+        </div>
+        <div>
+          <h4 class="font-semibold text-lg mb-4">Quick Links</h4>
+          <ul class="space-y-2">
+            <li><a href="#home" class="text-gray-400 hover:text-white transition">Home</a></li>
+            <li><a href="#machines" class="text-gray-400 hover:text-white transition">Products</a></li>
+            <li><a href="#features" class="text-gray-400 hover:text-white transition">Features</a></li>
+            <li><a href="#contact" class="text-gray-400 hover:text-white transition">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold text-lg mb-4">Products</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-400 hover:text-white transition">Internal Mixers</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">Kneader Mixers</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">Twin-Screw Extruders</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">Accessories</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold text-lg mb-4">Newsletter</h4>
+          <p class="text-gray-400 mb-4">Subscribe to get updates on new products and offers.</p>
+          <form class="flex">
+            <input type="email" placeholder="Your email" class="px-4 py-2 w-full rounded-l-lg focus:outline-none text-gray-800">
+            <button type="submit" class="bg-red-700 px-4 py-2 rounded-r-lg hover:bg-red-800 transition">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-400">&copy; 1997 Harshit Engineering Works. All rights reserved.</p>
+        <div class="flex space-x-6 mt-4 md:mt-0">
+          <a href="#" class="text-gray-400 hover:text-white transition">Privacy Policy</a>
+          <a href="#" class="text-gray-400 hover:text-white transition">Terms of Service</a>
+          <a href="#" class="text-gray-400 hover:text-white transition">Sitemap</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to Top Button -->
+  <button id="back-to-top" class="fixed bottom-8 right-8 bg-red-700 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition transform hover:scale-110 hidden">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+    </svg>
+  </button>
+
+  <!-- AOS Animation JS -->
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <!-- Font Awesome -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+  <script>
+    // Initialize AOS
+    AOS.init({
+      duration: 800,
+      easing: 'ease-in-out',
+      once: true
+    });
+    
+    // Mobile menu toggle
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    });
+    
+    // Back to top button
+    const backToTopButton = document.getElementById('back-to-top');
+    window.addEventListener('scroll', function() {
+      if (window.pageYOffset > 300) {
+        backToTopButton.classList.remove('hidden');
+      } else {
+        backToTopButton.classList.add('hidden');
+      }
+    });
+    
+    backToTopButton.addEventListener('click', function() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+    
+    // Form submission (example)
+    const contactForm = document.querySelector('form');
+    if (contactForm) {
+      contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Thank you for your message! We will contact you soon.');
+        this.reset();
+      });
+    }
+  </script>
+  
+</body>
+</html>
