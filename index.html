@@ -1,27 +1,62 @@
-u<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Harshit Engineering Works</title>
-  <meta name="description" content="Manufacturers of high-quality rubber mixer machines for industrial applications">
+  <meta charset="UTF-8">
+  <title>MechMix | Premium Rubber Mixing Solutions</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Industrial rubber mixer machines for polymer processing">
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- AOS CSS -->
-  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#b91c1c',
+            secondary: '#f59e0b',
+            dark: '#1f2937',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          animation: {
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'slide-in': 'slideIn 0.3s ease-out',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-20px)' },
+            },
+            slideIn: {
+              '0%': { transform: 'translateY(-10px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- AOS Animation -->
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  
   <style>
-    body {
-      font-family: 'Open Sans', sans-serif;
-    }
-    h1, h2, h3, h4 {
-      font-family: 'Montserrat', sans-serif;
-    }
-    .gradient-bg {
-      background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+    .hero-gradient {
+      background: linear-gradient(135deg, rgba(185,28,28,0.9) 0%, rgba(185,28,28,0.7) 100%);
     }
     .parallax {
       background-attachment: fixed;
@@ -29,421 +64,381 @@ u<!DOCTYPE html>
       background-repeat: no-repeat;
       background-size: cover;
     }
-    .machine-card:hover {
+    .card-hover:hover {
       transform: translateY(-10px);
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     }
-    .pulse-animation {
-      animation: pulse 2s infinite;
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
     }
-    @keyframes pulse {
-      0% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.05);
-      }
-      100% {
-        transform: scale(1);
-      }
+    .modal.active {
+      display: flex;
+    }
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
   </style>
 </head>
-<body class="bg-gray-100 text-gray-800 scroll-smooth">
+<body class="font-sans bg-gray-50 text-gray-800 scroll-smooth">
 
-  <!-- Header -->
-  <header class="gradient-bg text-white shadow-lg sticky top-0 z-50 transition-all duration-300">
-    <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
-      <div class="flex items-center space-x-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-        </svg>
-        <h1 class="text-2xl font-bold">Harshit Engineering<span class="text-yellow-300">Works</span></h1>
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden animate-slide-in">
+      <div class="bg-primary text-white p-6">
+        <h2 class="text-2xl font-bold">Welcome Back</h2>
+        <p class="text-primary-100">Sign in to your account</p>
       </div>
-      <nav class="hidden md:flex space-x-8 items-center">
-        <a href="#home" class="hover:text-yellow-300 transition duration-300 relative group">
-          Home
-          <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-yellow-300 transition-all duration-300 group-hover:w-full"></span>
-        </a>
-        <a href="#machines" class="hover:text-yellow-300 transition duration-300 relative group">
-          Machines
-          <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-yellow-300 transition-all duration-300 group-hover:w-full"></span>
-        </a>
-        <a href="#features" class="hover:text-yellow-300 transition duration-300 relative group">
-          Features
-          <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-yellow-300 transition-all duration-300 group-hover:w-full"></span>
-        </a>
-        <a href="#contact" class="hover:text-yellow-300 transition duration-300 relative group">
-          Contact
-          <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-yellow-300 transition-all duration-300 group-hover:w-full"></span>
-        </a>
-        <a href="#contact" class="bg-yellow-400 text-black font-semibold px-6 py-2 rounded-full hover:bg-yellow-500 transition transform hover:scale-105 ml-4">
-          Get Quote
-        </a>
-      </nav>
-      <button class="md:hidden text-2xl focus:outline-none" id="menu-toggle">
-        <i class="fas fa-bars"></i>
-      </button>
+      
+      <div class="p-6">
+        <form id="loginForm" class="space-y-4">
+          <div>
+            <label for="loginEmail" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+            <input type="email" id="loginEmail" required 
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition">
+          </div>
+          <div>
+            <label for="loginPassword" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <input type="password" id="loginPassword" required 
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition">
+          </div>
+          <div class="flex items-center justify-between">
+            <label class="flex items-center">
+              <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
+              <span class="ml-2 text-sm text-gray-600">Remember me</span>
+            </label>
+            <a href="#" class="text-sm text-primary hover:text-red-800">Forgot password?</a>
+          </div>
+          
+          <div id="loginMessage" class="hidden p-3 rounded-lg text-sm"></div>
+          
+          <button type="submit" class="w-full bg-primary text-white font-semibold px-6 py-3 rounded-lg hover:bg-red-800 transition">
+            <span id="loginBtnText">Sign In</span>
+            <i class="fas fa-spinner fa-spin ml-2 hidden" id="loginSpinner"></i>
+          </button>
+        </form>
+        
+        <div class="mt-6 text-center">
+          <p class="text-gray-600">Don't have an account? 
+            <a href="#" id="showRegister" class="text-primary font-semibold hover:text-red-800">Sign up</a>
+          </p>
+        </div>
+        
+        <div class="mt-6 pt-6 border-t border-gray-200">
+          <button id="closeLoginModal" class="w-full text-gray-600 hover:text-gray-800 transition">
+            <i class="fas fa-times mr-2"></i> Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Register Modal -->
+  <div id="registerModal" class="modal">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden animate-slide-in">
+      <div class="bg-secondary text-gray-900 p-6">
+        <h2 class="text-2xl font-bold">Create Account</h2>
+        <p>Register for exclusive access</p>
+      </div>
+      
+      <div class="p-6">
+        <form id="registerForm" class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="registerFirstName" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+              <input type="text" id="registerFirstName" required 
+                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+            </div>
+            <div>
+              <label for="registerLastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+              <input type="text" id="registerLastName" required 
+                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+            </div>
+          </div>
+          
+          <div>
+            <label for="registerEmail" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+            <input type="email" id="registerEmail" required 
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+          </div>
+          
+          <div>
+            <label for="registerPhone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+            <input type="tel" id="registerPhone" required 
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+          </div>
+          
+          <div>
+            <label for="registerCompany" class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+            <input type="text" id="registerCompany" required 
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+          </div>
+          
+          <div>
+            <label for="registerPassword" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <input type="password" id="registerPassword" required minlength="6"
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+          </div>
+          
+          <div>
+            <label for="registerConfirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+            <input type="password" id="registerConfirmPassword" required 
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+          </div>
+          
+          <div id="registerMessage" class="hidden p-3 rounded-lg text-sm"></div>
+          
+          <button type="submit" class="w-full bg-secondary text-gray-900 font-semibold px-6 py-3 rounded-lg hover:bg-yellow-500 transition">
+            <span id="registerBtnText">Create Account</span>
+            <i class="fas fa-spinner fa-spin ml-2 hidden" id="registerSpinner"></i>
+          </button>
+        </form>
+        
+        <div class="mt-6 text-center">
+          <p class="text-gray-600">Already have an account? 
+            <a href="#" id="showLogin" class="text-secondary font-semibold hover:text-yellow-600">Sign in</a>
+          </p>
+        </div>
+        
+        <div class="mt-6 pt-6 border-t border-gray-200">
+          <button id="closeRegisterModal" class="w-full text-gray-600 hover:text-gray-800 transition">
+            <i class="fas fa-times mr-2"></i> Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Profile Dropdown -->
+  <div id="userDropdown" class="hidden absolute right-4 top-16 bg-white rounded-xl shadow-2xl w-64 overflow-hidden z-50 animate-slide-in">
+    <div class="p-4 border-b border-gray-200">
+      <div class="flex items-center">
+        <div class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-bold text-lg mr-3">
+          <span id="userInitial">U</span>
+        </div>
+        <div>
+          <h4 class="font-semibold" id="userName">User Name</h4>
+          <p class="text-sm text-gray-500" id="userEmail">user@email.com</p>
+        </div>
+      </div>
     </div>
     
-    <!-- Mobile Menu -->
-    <div class="md:hidden hidden bg-red-800 w-full px-4 py-2" id="mobile-menu">
-      <div class="flex flex-col space-y-3">
-        <a href="#home" class="block py-2 hover:text-yellow-300">Home</a>
-        <a href="#machines" class="block py-2 hover:text-yellow-300">Machines</a>
-        <a href="#features" class="block py-2 hover:text-yellow-300">Features</a>
-        <a href="#contact" class="block py-2 hover:text-yellow-300">Contact</a>
+    <div class="p-2">
+      <a href="#" id="dashboardLink" class="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100 transition">
+        <i class="fas fa-tachometer-alt text-primary mr-3"></i>
+        Dashboard
+      </a>
+      <a href="#" id="profileLink" class="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100 transition">
+        <i class="fas fa-user-circle text-primary mr-3"></i>
+        My Profile
+      </a>
+      <a href="#" id="quotesLink" class="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100 transition">
+        <i class="fas fa-file-invoice text-primary mr-3"></i>
+        My Quotes
+      </a>
+    </div>
+    
+    <div class="p-2 border-t border-gray-200">
+      <button id="logoutBtn" class="w-full flex items-center justify-center px-3 py-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition">
+        <i class="fas fa-sign-out-alt mr-2"></i>
+        Sign Out
+      </button>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <header class="bg-white shadow-lg sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center">
+        <svg class="w-8 h-8 text-primary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+        </svg>
+        <span class="text-xl font-bold text-primary">MechMix</span>
       </div>
+      
+      <nav class="hidden md:flex space-x-8 items-center">
+        <a href="#home" class="font-medium hover:text-primary transition">Home</a>
+        <a href="#products" class="font-medium hover:text-primary transition">Products</a>
+        <a href="#features" class="font-medium hover:text-primary transition">Features</a>
+        <a href="#testimonials" class="font-medium hover:text-primary transition">Testimonials</a>
+        <a href="#contact" class="font-medium hover:text-primary transition">Contact</a>
+        
+        <div class="relative">
+          <button id="userMenuBtn" class="hidden items-center bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-full transition">
+            <i class="fas fa-user-circle text-primary mr-2"></i>
+            <span id="userShortName">Account</span>
+            <i class="fas fa-chevron-down ml-2 text-sm"></i>
+          </button>
+          
+          <button id="openLoginModal" class="bg-primary text-white px-6 py-2 rounded-full hover:bg-red-800 transition">
+            <i class="fas fa-sign-in-alt mr-2"></i>Login
+          </button>
+        </div>
+      </nav>
+      
+      <button class="md:hidden text-gray-700" id="mobileMenuBtn">
+        <i class="fas fa-bars text-2xl"></i>
+      </button>
     </div>
   </header>
 
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden">
+    <div class="absolute right-0 top-0 h-full w-64 bg-white shadow-xl animate-slide-in">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-8">
+          <span class="text-xl font-bold text-primary">Menu</span>
+          <button id="closeMobileMenu" class="text-gray-600 hover:text-gray-800">
+            <i class="fas fa-times text-2xl"></i>
+          </button>
+        </div>
+        
+        <nav class="space-y-4">
+          <a href="#home" class="block py-3 px-4 rounded-lg hover:bg-gray-100 transition">Home</a>
+          <a href="#products" class="block py-3 px-4 rounded-lg hover:bg-gray-100 transition">Products</a>
+          <a href="#features" class="block py-3 px-4 rounded-lg hover:bg-gray-100 transition">Features</a>
+          <a href="#testimonials" class="block py-3 px-4 rounded-lg hover:bg-gray-100 transition">Testimonials</a>
+          <a href="#contact" class="block py-3 px-4 rounded-lg hover:bg-gray-100 transition">Contact</a>
+          
+          <div class="pt-6 border-t border-gray-200">
+            <button id="mobileLoginBtn" class="w-full bg-primary text-white px-6 py-3 rounded-lg hover:bg-red-800 transition">
+              <i class="fas fa-sign-in-alt mr-2"></i>Login / Register
+            </button>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div>
+
   <!-- Hero Section -->
-  <section id="home" class="h-screen flex items-center justify-center parallax" style="background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1602311865240-514c6b25d517?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');">
-    <div class="text-center px-4" data-aos="zoom-in" data-aos-duration="1000">
-      <h2 class="text-4xl md:text-6xl font-bold mb-6 text-white">
-        <span class="inline-block">Welcome</span> 
-        <span class="text-yellow-400 inline-block">Harshit Engineering works</span>
-      </h2>
+  <section id="home" class="min-h-screen flex items-center justify-center parallax" style="background-image: url('https://images.unsplash.com/photo-1602311865240-514c6b25d517?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');">
+    <div class="hero-gradient absolute inset-0"></div>
+    
+    <div class="container mx-auto px-4 text-center relative z-10" data-aos="fade-up">
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
+        Industrial <span class="text-secondary">Rubber Mixers</span>
+      </h1>
       <p class="text-xl md:text-2xl text-gray-200 mb-8 max-w-3xl mx-auto">
         Precision-engineered mixing solutions for rubber, polymer, and elastomer processing industries
       </p>
       <div class="flex flex-col sm:flex-row justify-center gap-4">
-        <a href="#machines" class="bg-yellow-400 text-black font-semibold px-8 py-4 rounded-full hover:bg-yellow-500 transition transform hover:scale-105 pulse-animation">
+        <a href="#products" class="bg-secondary text-gray-900 font-semibold px-8 py-4 rounded-full hover:bg-yellow-500 transition transform hover:scale-105 animate-pulse-slow">
           Explore Products <i class="fas fa-arrow-right ml-2"></i>
         </a>
-        <a href="#contact" class="bg-transparent border-2 border-white text-white font-semibold px-8 py-4 rounded-full hover:bg-white hover:text-black transition">
-          Contact Sales <i class="fas fa-phone ml-2"></i>
+        <a href="#contact" class="bg-transparent border-2 border-white text-white font-semibold px-8 py-4 rounded-full hover:bg-white hover:text-gray-900 transition">
+          Get Quote <i class="fas fa-phone ml-2"></i>
         </a>
       </div>
     </div>
     
-    <a href="#machines" class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-      <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-      </svg>
+    <a href="#products" class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-white">
+      <i class="fas fa-chevron-down text-2xl"></i>
     </a>
   </section>
 
-  <!-- Stats Section -->
+  <!-- Dynamic Stats Section -->
   <section class="py-16 bg-white">
-    <div class="max-w-6xl mx-auto px-4">
+    <div class="container mx-auto px-4">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
         <div class="p-6" data-aos="fade-up" data-aos-delay="100">
-          <div class="text-4xl font-bold text-red-700 mb-2">250+</div>
+          <div class="text-4xl font-bold text-primary mb-2"><span id="machinesCount">0</span>+</div>
           <div class="text-gray-600">Machines Installed</div>
         </div>
         <div class="p-6" data-aos="fade-up" data-aos-delay="200">
-          <div class="text-4xl font-bold text-red-700 mb-2">30+</div>
+          <div class="text-4xl font-bold text-primary mb-2"><span id="experienceCount">0</span>+</div>
           <div class="text-gray-600">Years Experience</div>
         </div>
         <div class="p-6" data-aos="fade-up" data-aos-delay="300">
-          <div class="text-4xl font-bold text-red-700 mb-2">15+</div>
+          <div class="text-4xl font-bold text-primary mb-2"><span id="countriesCount">0</span>+</div>
           <div class="text-gray-600">Countries Served</div>
         </div>
         <div class="p-6" data-aos="fade-up" data-aos-delay="400">
-          <div class="text-4xl font-bold text-red-700 mb-2">24/7</div>
+          <div class="text-4xl font-bold text-primary mb-2" id="supportText">24/7</div>
           <div class="text-gray-600">Support Available</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Machines Section -->
-  <section id="machines" class="py-20 px-6 bg-gray-50">
-    <div class="max-w-6xl mx-auto">
+  <!-- Products Section -->
+  <section id="products" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
       <div class="text-center mb-16">
         <h2 class="text-3xl md:text-4xl font-bold mb-4" data-aos="fade-up">
-          Our <span class="text-red-700">Machinery</span> Range
+          Our <span class="text-primary">Product</span> Range
         </h2>
         <p class="text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
-          High-efficiency mixers designed for industrial rubber applications with precision and durability
+          High-efficiency mixers designed for industrial rubber applications
         </p>
       </div>
       
-      <div class="grid md:grid-cols-3 gap-8">
-        <div class="bg-white p-6 rounded-xl shadow-md machine-card transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
-          <div class="relative overflow-hidden rounded-lg h-48 mb-6">
-            <img src="https://images.unsplash.com/photo-1581093450022-7f44d8f251e8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
-                 class="w-full h-full object-cover transition duration-500 hover:scale-110" 
-                 alt="Internal Mixer">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-            <div class="absolute bottom-0 left-0 p-4 text-white">
-              <span class="bg-red-700 text-xs px-2 py-1 rounded">BATCH MIXER</span>
-            </div>
-          </div>
-          <h3 class="text-xl font-semibold mb-2">Internal Rubber Mixer</h3>
-          <p class="text-gray-600 mb-4">Advanced batch processing with precise temperature and torque control for consistent rubber compounding.</p>
-          <ul class="space-y-2 mb-6">
-            <li class="flex items-start">
-              <svg class="h-5 w-5 text-red-700 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-              <span>Capacity: 10L to 500L</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="h-5 w-5 text-red-700 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-              <span>PLC controlled operation</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="h-5 w-5 text-red-700 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-              <span>Energy efficient design</span>
-            </li>
-          </ul>
-          <a href="#contact" class="inline-block bg-red-700 text-white px-6 py-2 rounded-full hover:bg-red-800 transition">
-            Enquire Now
-          </a>
-        </div>
-        
-        <div class="bg-white p-6 rounded-xl shadow-md machine-card transition-all duration-300" data-aos="fade-up" data-aos-delay="300">
-          <div class="relative overflow-hidden rounded-lg h-48 mb-6">
-            <img src="https://images.unsplash.com/photo-1581094271901-8022df4466f9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
-                 class="w-full h-full object-cover transition duration-500 hover:scale-110" 
-                 alt="Kneader">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-            <div class="absolute bottom-0 left-0 p-4 text-white">
-              <span class="bg-red-700 text-xs px-2 py-1 rounded">CONTINUOUS</span>
-            </div>
-          </div>
-          <h3 class="text-xl font-semibold mb-2">Kneader Mixer</h3>
-          <p class="text-gray-600 mb-4">Specialized design for high-viscosity elastomer and polymer blending with superior dispersion.</p>
-          <ul class="space-y-2 mb-6">
-            <li class="flex items-start">
-              <svg class="h-5 w-5 text-red-700 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-              <span>Capacity: 5L to 200L</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="h-5 w-5 text-red-700 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-              <span>Z-type blade configuration</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="h-5 w-5 text-red-700 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-              <span>Heavy-duty construction</span>
-            </li>
-          </ul>
-          <a href="#contact" class="inline-block bg-red-700 text-white px-6 py-2 rounded-full hover:bg-red-800 transition">
-            Enquire Now
-          </a>
-        </div>
-        
-        <div class="bg-white p-6 rounded-xl shadow-md machine-card transition-all duration-300" data-aos="fade-up" data-aos-delay="400">
-          <div class="relative overflow-hidden rounded-lg h-48 mb-6">
-            <img src="https://images.unsplash.com/photo-1581094272269-6a7ba8a0cdba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
-                 class="w-full h-full object-cover transition duration-500 hover:scale-110" 
-                 alt="Extruder">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-            <div class="absolute bottom-0 left-0 p-4 text-white">
-              <span class="bg-red-700 text-xs px-2 py-1 rounded">EXTRUSION</span>
-            </div>
-          </div>
-          <h3 class="text-xl font-semibold mb-2">Twin-Screw Extruder</h3>
-          <p class="text-gray-600 mb-4">High-performance extrusion for efficient shaping, degassing and compounding of rubber materials.</p>
-          <ul class="space-y-2 mb-6">
-            <li class="flex items-start">
-              <svg class="h-5 w-5 text-red-700 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-              <span>Screw diameter: 30-150mm</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="h-5 w-5 text-red-700 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-              <span>Variable speed control</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="h-5 w-5 text-red-700 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-              <span>Multiple heating zones</span>
-            </li>
-          </ul>
-          <a href="#contact" class="inline-block bg-red-700 text-white px-6 py-2 rounded-full hover:bg-red-800 transition">
-            Enquire Now
-          </a>
-        </div>
+      <div id="productsContainer" class="grid md:grid-cols-3 gap-8">
+        <!-- Products will be loaded dynamically -->
       </div>
     </div>
   </section>
 
   <!-- Features Section -->
   <section id="features" class="py-20 bg-white">
-    <div class="max-w-6xl mx-auto px-4">
+    <div class="container mx-auto px-4">
       <div class="text-center mb-16">
         <h2 class="text-3xl md:text-4xl font-bold mb-4" data-aos="fade-up">
-          Why Choose <span class="text-red-700">MechMix</span>
+          Advanced <span class="text-primary">Features</span>
         </h2>
         <p class="text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
-          Our commitment to quality and innovation sets us apart in the rubber machinery industry
+          Innovative technologies that set our machines apart
         </p>
       </div>
       
-      <div class="grid md:grid-cols-2 gap-12">
-        <div class="flex" data-aos="fade-right">
-          <div class="mr-6">
-            <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center">
-              <svg class="w-8 h-8 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-              </svg>
-            </div>
-          </div>
-          <div>
-            <h3 class="text-xl font-semibold mb-3">High Performance</h3>
-            <p class="text-gray-600">Our machines deliver superior mixing efficiency with reduced energy consumption, lowering your operational costs.</p>
-          </div>
-        </div>
-        
-        <div class="flex" data-aos="fade-left" data-aos-delay="100">
-          <div class="mr-6">
-            <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center">
-              <svg class="w-8 h-8 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-              </svg>
-            </div>
-          </div>
-          <div>
-            <h3 class="text-xl font-semibold mb-3">Robust Construction</h3>
-            <p class="text-gray-600">Built with premium materials and components to withstand the toughest industrial environments.</p>
-          </div>
-        </div>
-        
-        <div class="flex" data-aos="fade-right" data-aos-delay="200">
-          <div class="mr-6">
-            <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center">
-              <svg class="w-8 h-8 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-              </svg>
-            </div>
-          </div>
-          <div>
-            <h3 class="text-xl font-semibold mb-3">Precision Engineering</h3>
-            <p class="text-gray-600">Every component is precision-engineered for optimal performance and long service life.</p>
-          </div>
-        </div>
-        
-        <div class="flex" data-aos="fade-left" data-aos-delay="300">
-          <div class="mr-6">
-            <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center">
-              <svg class="w-8 h-8 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path>
-              </svg>
-            </div>
-          </div>
-          <div>
-            <h3 class="text-xl font-semibold mb-3">Smart Automation</h3>
-            <p class="text-gray-600">Advanced PLC controls with touchscreen interfaces for precise process control and monitoring.</p>
-          </div>
-        </div>
+      <div id="featuresContainer" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Features will be loaded dynamically -->
       </div>
     </div>
   </section>
 
   <!-- Testimonials Section -->
-  <section class="py-20 bg-gray-50">
-    <div class="max-w-6xl mx-auto px-4">
+  <section id="testimonials" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
       <div class="text-center mb-16">
         <h2 class="text-3xl md:text-4xl font-bold mb-4" data-aos="fade-up">
-          What Our <span class="text-red-700">Clients</span> Say
+          Client <span class="text-primary">Testimonials</span>
         </h2>
         <p class="text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
-          Trusted by rubber manufacturers worldwide
+          What our customers say about our products
         </p>
       </div>
       
-      <div class="grid md:grid-cols-3 gap-8">
-        <div class="bg-white p-8 rounded-xl shadow-md" data-aos="fade-up" data-aos-delay="200">
-          <div class="flex items-center mb-4">
-            <div class="text-yellow-400 mr-2">
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-            </div>
-          </div>
-          <p class="text-gray-600 mb-6">"The MechMix internal mixer has doubled our production capacity while reducing energy costs by 30%. Their after-sales support is exceptional."</p>
-          <div class="flex items-center">
-       <div class="bg-gray-200 w-12 h-12 rounded-full overflow-hidden mr-4">
-              <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Client" class="w-full h-full object-cover">
-            </div>
-            <div>
-              <h4 class="font-semibold">Rajesh Patel</h4>
-              <p class="text-sm text-gray-500">ABC Rubber Industries</p>
-            </div>
-          </div>
-        </div>
-        
-        <div class="bg-white p-8 rounded-xl shadow-md" data-aos="fade-up" data-aos-delay="300">
-          <div class="flex items-center mb-4">
-            <div class="text-yellow-400 mr-2">
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star-half-alt"></i>
-            </div>
-          </div>
-          <p class="text-gray-600 mb-6">"We've been using MechMix kneaders for 5 years now. The machine reliability and consistency in mixing quality is unmatched in the industry."</p>
-          <div class="flex items-center">
-            <div class="bg-gray-200 w-12 h-12 rounded-full overflow-hidden mr-4">
-              <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Client" class="w-full h-full object-cover">
-            </div>
-            <div>
-              <h4 class="font-semibold">Priya Sharma</h4>
-              <p class="text-sm text-gray-500">XYZ Polymer Solutions</p>
-            </div>
-          </div>
-        </div>
-        
-        <div class="bg-white p-8 rounded-xl shadow-md" data-aos="fade-up" data-aos-delay="400">
-          <div class="flex items-center mb-4">
-            <div class="text-yellow-400 mr-2">
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-            </div>
-          </div>
-          <p class="text-gray-600 mb-6">"The twin-screw extruder from MechMix has revolutionized our production line with its precision and efficiency. Highly recommended!"</p>
-          <div class="flex items-center">
-            <div class="bg-gray-200 w-12 h-12 rounded-full overflow-hidden mr-4">
-              <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Client" class="w-full h-full object-cover">
-            </div>
-            <div>
-              <h4 class="font-semibold">Amit Kumar</h4>
-              <p class="text-sm text-gray-500">Elasto Tech Ltd.</p>
-            </div>
-          </div>
-        </div>
+      <div id="testimonialsContainer" class="grid md:grid-cols-3 gap-8">
+        <!-- Testimonials will be loaded dynamically -->
       </div>
     </div>
   </section>
 
   <!-- CTA Section -->
-  <section class="py-16 gradient-bg text-white">
-    <div class="max-w-4xl mx-auto px-4 text-center">
+  <section class="py-16 bg-primary text-white">
+    <div class="container mx-auto px-4 text-center">
       <h2 class="text-3xl md:text-4xl font-bold mb-6" data-aos="fade-up">
-        Ready to Upgrade Your Rubber Mixing Process?
+        Ready to Upgrade Your Mixing Process?
       </h2>
       <p class="text-xl mb-8 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
-        Our experts are ready to help you select the perfect machine for your needs.
+        Contact us today for a free consultation and quote
       </p>
       <div class="flex flex-col sm:flex-row justify-center gap-4" data-aos="fade-up" data-aos-delay="200">
-        <a href="#contact" class="bg-white text-red-700 font-semibold px-8 py-4 rounded-full hover:bg-gray-100 transition transform hover:scale-105">
-          Get a Free Consultation <i class="fas fa-phone-alt ml-2"></i>
+        <a href="#contact" class="bg-white text-primary font-semibold px-8 py-4 rounded-full hover:bg-gray-100 transition transform hover:scale-105">
+          Get a Free Quote <i class="fas fa-envelope ml-2"></i>
         </a>
-        <a href="tel:+91-9811019011" class="bg-transparent border-2 border-white font-semibold px-8 py-4 rounded-full hover:bg-white hover:text-red-700 transition">
-          Call Now: +91-9811019011
+        <a href="tel:+919876543210" class="bg-transparent border-2 border-white font-semibold px-8 py-4 rounded-full hover:bg-white hover:text-primary transition">
+          Call Now: +91-9876543210
         </a>
       </div>
     </div>
@@ -451,108 +446,103 @@ u<!DOCTYPE html>
 
   <!-- Contact Section -->
   <section id="contact" class="py-20 bg-white">
-    <div class="max-w-6xl mx-auto px-4">
+    <div class="container mx-auto px-4">
       <div class="text-center mb-16">
         <h2 class="text-3xl md:text-4xl font-bold mb-4" data-aos="fade-up">
-          Get In <span class="text-red-700">Touch</span>
+          Contact <span class="text-primary">Us</span>
         </h2>
         <p class="text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
-          Have questions about our machines? Contact our sales team today.
+          Get in touch with our sales team for more information
         </p>
       </div>
       
-      <div class="grid md:grid-cols-2 gap-12">
+      <div class="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
         <div data-aos="fade-right">
-          <h3 class="text-2xl font-semibold mb-6">Contact Information</h3>
+          <h3 class="text-2xl font-semibold mb-6">Our Office</h3>
           
           <div class="space-y-6">
             <div class="flex items-start">
-              <div class="bg-red-100 p-3 rounded-full mr-4">
-                <svg class="w-6 h-6 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-                </svg>
+              <div class="bg-primary bg-opacity-10 p-3 rounded-full mr-4">
+                <i class="fas fa-phone text-primary"></i>
               </div>
               <div>
                 <h4 class="font-semibold">Phone</h4>
-                <p class="text-gray-600">+91-9811010011</p>
-                <p class="text-gray-600">+91-9868883132</p>
+                <p class="text-gray-600">+91-9876543210</p>
               </div>
             </div>
             
             <div class="flex items-start">
-              <div class="bg-red-100 p-3 rounded-full mr-4">
-                <svg class="w-6 h-6 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                </svg>
+              <div class="bg-primary bg-opacity-10 p-3 rounded-full mr-4">
+                <i class="fas fa-envelope text-primary"></i>
               </div>
               <div>
                 <h4 class="font-semibold">Email</h4>
-                <p class="text-gray-600">rgupta889@Gmail.com</p>
-                <p class="text-gray-600">harshitengineeringwork@Gmail.com</p>
+                <p class="text-gray-600">sales@mechmix.com</p>
               </div>
             </div>
             
             <div class="flex items-start">
-              <div class="bg-red-100 p-3 rounded-full mr-4">
-                <svg class="w-6 h-6 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                </svg>
+              <div class="bg-primary bg-opacity-10 p-3 rounded-full mr-4">
+                <i class="fas fa-map-marker-alt text-primary"></i>
               </div>
               <div>
                 <h4 class="font-semibold">Address</h4>
-                <p class="text-gray-600">C-41 Adyapak Nagar opp hanuman mandir najafghar road</p>
-                <p class="text-gray-600">nangloi, west Delhi - 110041</p>
-                <p class="text-gray-600">India</p>
+                <p class="text-gray-600">Industrial Area, Phase II</p>
+                <p class="text-gray-600">New Delhi - 110020, India</p>
               </div>
             </div>
           </div>
           
-          <div class="mt-8">
-            <h4 class="font-semibold mb-4">Follow Us</h4>
-            <div class="flex space-x-4">
-              <a href="#" class="bg-gray-100 w-10 h-10 rounded-full flex items-center justify-center text-gray-700 hover:bg-red-700 hover:text-white transition">
-                <i class="fab fa-facebook-f"></i>
-              </a>
-              <a href="#" class="bg-gray-100 w-10 h-10 rounded-full flex items-center justify-center text-gray-700 hover:bg-red-700 hover:text-white transition">
-                <i class="fab fa-twitter"></i>
-              </a>
-              <a href="#" class="bg-gray-100 w-10 h-10 rounded-full flex items-center justify-center text-gray-700 hover:bg-red-700 hover:text-white transition">
-                <i class="fab fa-linkedin-in"></i>
-              </a>
-              <a href="#" class="bg-gray-100 w-10 h-10 rounded-full flex items-center justify-center text-gray-700 hover:bg-red-700 hover:text-white transition">
-                <i class="fab fa-youtube"></i>
-              </a>
+          <div class="mt-12">
+            <h4 class="text-xl font-semibold mb-4">Business Hours</h4>
+            <div class="space-y-2">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Monday - Friday</span>
+                <span class="font-medium">9:00 AM - 6:00 PM</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Saturday</span>
+                <span class="font-medium">10:00 AM - 4:00 PM</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Sunday</span>
+                <span class="font-medium">Closed</span>
+              </div>
             </div>
           </div>
         </div>
         
         <div data-aos="fade-left" data-aos-delay="100">
-          <h3 class="text-2xl font-semibold mb-6">Send Us a Message</h3>
-          <form class="space-y-4">
+          <form id="contactForm" class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                <input type="text" id="name" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition">
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                <input type="text" id="name" required 
+                       class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition">
               </div>
               <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                <input type="email" id="email" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition">
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                <input type="email" id="email" required 
+                       class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition">
               </div>
             </div>
             <div>
-              <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-              <input type="tel" id="phone" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition">
+              <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
+              <input type="tel" id="phone" required 
+                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition">
             </div>
             <div>
-              <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-              <input type="text" id="subject" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition">
+              <label for="company" class="block text-sm font-medium text-gray-700 mb-1">Company</label>
+              <input type="text" id="company" 
+                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition">
             </div>
             <div>
-              <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
-              <textarea id="message" rows="4" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition"></textarea>
+              <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message *</label>
+              <textarea id="message" rows="4" required 
+                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"></textarea>
             </div>
-            <button type="submit" class="w-full bg-red-700 text-white font-semibold px-6 py-3 rounded-lg hover:bg-red-800 transition transform hover:scale-[1.01]">
+            <div id="contactMessage" class="hidden p-3 rounded-lg text-sm"></div>
+            <button type="submit" class="w-full bg-primary text-white font-semibold px-6 py-3 rounded-lg hover:bg-red-800 transition">
               Send Message <i class="fas fa-paper-plane ml-2"></i>
             </button>
           </form>
@@ -561,25 +551,90 @@ u<!DOCTYPE html>
     </div>
   </section>
 
+  <!-- Dashboard Section (Hidden by default) -->
+  <section id="dashboard" class="hidden py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">User Dashboard</h2>
+        <p class="text-gray-600">Welcome back, <span id="dashboardUserName" class="font-semibold text-primary">User</span></p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8 mb-12">
+        <div class="bg-white p-6 rounded-xl shadow-md">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-semibold">My Quotes</h3>
+            <i class="fas fa-file-invoice text-3xl text-primary"></i>
+          </div>
+          <p class="text-4xl font-bold text-primary mb-2"><span id="quoteCount">0</span></p>
+          <p class="text-gray-600">Total requests</p>
+        </div>
+        
+        <div class="bg-white p-6 rounded-xl shadow-md">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-semibold">Saved Products</h3>
+            <i class="fas fa-heart text-3xl text-red-500"></i>
+          </div>
+          <p class="text-4xl font-bold text-primary mb-2"><span id="savedCount">0</span></p>
+          <p class="text-gray-600">Favorites</p>
+        </div>
+        
+        <div class="bg-white p-6 rounded-xl shadow-md">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-semibold">Messages</h3>
+            <i class="fas fa-envelope text-3xl text-secondary"></i>
+          </div>
+          <p class="text-4xl font-bold text-primary mb-2"><span id="messageCount">0</span></p>
+          <p class="text-gray-600">Unread</p>
+        </div>
+      </div>
+      
+      <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="p-6 border-b border-gray-200">
+          <h3 class="text-xl font-semibold">Recent Activity</h3>
+        </div>
+        <div class="p-6">
+          <div id="activityList" class="space-y-4">
+            <p class="text-gray-500 text-center py-4">No recent activity</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="bg-gray-900 text-white pt-12 pb-6">
-    <div class="max-w-6xl mx-auto px-4">
+    <div class="container mx-auto px-4">
       <div class="grid md:grid-cols-4 gap-8 mb-8">
         <div>
-          <h3 class="text-xl font-bold mb-4">Harshit Engineering Works</h3>
-          <p class="text-gray-400">Leading manufacturers of rubber mixing machinery since 1995, delivering quality and innovation to industries worldwide.</p>
+          <h3 class="text-xl font-bold mb-4 flex items-center">
+            <svg class="w-6 h-6 text-primary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            MechMix
+          </h3>
+          <p class="text-gray-400 mb-4">
+            Leading manufacturer of industrial rubber mixing equipment since 1990.
+          </p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-youtube"></i></a>
+          </div>
         </div>
+        
         <div>
-          <h4 class="font-semibold text-lg mb-4">Quick Links</h4>
+          <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
           <ul class="space-y-2">
             <li><a href="#home" class="text-gray-400 hover:text-white transition">Home</a></li>
-            <li><a href="#machines" class="text-gray-400 hover:text-white transition">Products</a></li>
+            <li><a href="#products" class="text-gray-400 hover:text-white transition">Products</a></li>
             <li><a href="#features" class="text-gray-400 hover:text-white transition">Features</a></li>
-            <li><a href="#contact" class="text-gray-400 hover:text-white transition">Contact</a></li>
+            <li><a href="#testimonials" class="text-gray-400 hover:text-white transition">Testimonials</a></li>
           </ul>
         </div>
+        
         <div>
-          <h4 class="font-semibold text-lg mb-4">Products</h4>
+          <h4 class="text-lg font-semibold mb-4">Products</h4>
           <ul class="space-y-2">
             <li><a href="#" class="text-gray-400 hover:text-white transition">Internal Mixers</a></li>
             <li><a href="#" class="text-gray-400 hover:text-white transition">Kneader Mixers</a></li>
@@ -587,80 +642,737 @@ u<!DOCTYPE html>
             <li><a href="#" class="text-gray-400 hover:text-white transition">Accessories</a></li>
           </ul>
         </div>
+        
         <div>
-          <h4 class="font-semibold text-lg mb-4">Newsletter</h4>
-          <p class="text-gray-400 mb-4">Subscribe to get updates on new products and offers.</p>
-          <form class="flex">
-            <input type="email" placeholder="Your email" class="px-4 py-2 w-full rounded-l-lg focus:outline-none text-gray-800">
-            <button type="submit" class="bg-red-700 px-4 py-2 rounded-r-lg hover:bg-red-800 transition">
+          <h4 class="text-lg font-semibold mb-4">Newsletter</h4>
+          <p class="text-gray-400 mb-4">Subscribe for updates and offers</p>
+          <div class="flex">
+            <input type="email" placeholder="Your email" class="bg-gray-800 text-white px-4 py-2 rounded-l-lg w-full outline-none">
+            <button class="bg-primary px-4 py-2 rounded-r-lg hover:bg-red-800 transition">
               <i class="fas fa-paper-plane"></i>
             </button>
-          </form>
+          </div>
         </div>
       </div>
-      <div class="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center">
-        <p class="text-gray-400">&copy; 1997 Harshit Engineering Works. All rights reserved.</p>
-        <div class="flex space-x-6 mt-4 md:mt-0">
-          <a href="#" class="text-gray-400 hover:text-white transition">Privacy Policy</a>
-          <a href="#" class="text-gray-400 hover:text-white transition">Terms of Service</a>
-          <a href="#" class="text-gray-400 hover:text-white transition">Sitemap</a>
-        </div>
+      
+      <div class="pt-8 border-t border-gray-800 text-center text-gray-400">
+        <p>&copy; 2024 MechMix Industries. All rights reserved.</p>
       </div>
     </div>
   </footer>
 
-  <!-- Back to Top Button -->
-  <button id="back-to-top" class="fixed bottom-8 right-8 bg-red-700 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition transform hover:scale-110 hidden">
-    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
-    </svg>
-  </button>
-
-  <!-- AOS Animation JS -->
+  <!-- AOS Animation -->
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-  <!-- Font Awesome -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+  
   <script>
     // Initialize AOS
     AOS.init({
       duration: 800,
-      easing: 'ease-in-out',
-      once: true
+      once: true,
+      offset: 100
     });
-    
-    // Mobile menu toggle
-    document.getElementById('menu-toggle').addEventListener('click', function() {
-      const menu = document.getElementById('mobile-menu');
-      menu.classList.toggle('hidden');
-    });
-    
-    // Back to top button
-    const backToTopButton = document.getElementById('back-to-top');
-    window.addEventListener('scroll', function() {
-      if (window.pageYOffset > 300) {
-        backToTopButton.classList.remove('hidden');
+
+    // Firebase Configuration
+   const firebaseConfig = {
+    apiKey: "AIzaSyDrVMchNTipBmJW0MowfHS2ucagDhyKBpg",
+    authDomain: "harshit-engineering-work-dd263.firebaseapp.com",
+    projectId: "harshit-engineering-work-dd263",
+    storageBucket: "harshit-engineering-work-dd263.firebasestorage.app",
+    messagingSenderId: "729837485760",
+    appId: "1:729837485760:web:cb02a0994fb4d534153725",
+    measurementId: "G-DY2XR531VZ"
+  };
+
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // Data for dynamic content
+    const productsData = [
+      {
+        id: 1,
+        name: "Internal Rubber Mixer",
+        description: "Advanced batch processing with precise temperature and torque control. Features PLC automation and energy-efficient design.",
+        image: "https://images.unsplash.com/photo-1581093450022-7f44d8f251e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+        price: "Starting from ₹25,00,000"
+      },
+      {
+        id: 2,
+        name: "Kneader Mixer",
+        description: "Specialized design for high-viscosity elastomer and polymer blending. Heavy-duty construction for continuous operation.",
+        image: "https://images.unsplash.com/photo-1581094271901-8022df4466f9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+        price: "Starting from ₹18,50,000"
+      },
+      {
+        id: 3,
+        name: "Twin-Screw Extruder",
+        description: "High-performance extrusion for efficient shaping of rubber materials. Customizable screw configurations available.",
+        image: "https://images.unsplash.com/photo-1581094272269-6a7ba8a0cdba?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+        price: "Starting from ₹32,00,000"
+      }
+    ];
+
+    const featuresData = [
+      {
+        icon: "fas fa-tachometer-alt",
+        title: "Precision Control",
+        description: "Advanced PLC systems with touchscreen interfaces for complete process control and data logging."
+      },
+      {
+        icon: "fas fa-bolt",
+        title: "Energy Efficient",
+        description: "Optimized designs reduce power consumption by up to 30% compared to conventional mixers."
+      },
+      {
+        icon: "fas fa-shield-alt",
+        title: "Safety Systems",
+        description: "Multiple safety interlocks, emergency stop systems, and overload protection for operator safety."
+      },
+      {
+        icon: "fas fa-cogs",
+        title: "Customizable",
+        description: "Tailored solutions to meet specific production requirements and material characteristics."
+      },
+      {
+        icon: "fas fa-history",
+        title: "Low Maintenance",
+        description: "Robust construction with easy-access components for minimal downtime and maintenance."
+      },
+      {
+        icon: "fas fa-chart-line",
+        title: "Smart Monitoring",
+        description: "IoT-enabled remote monitoring and predictive maintenance capabilities."
+      }
+    ];
+
+    const testimonialsData = [
+      {
+        name: "Rajesh Patel",
+        company: "ABC Rubber Industries",
+        rating: 5,
+        text: "The MechMix internal mixer has transformed our production process with its consistent performance and low maintenance requirements.",
+        avatar: "https://randomuser.me/api/portraits/men/32.jpg"
+      },
+      {
+        name: "Priya Sharma",
+        company: "XYZ Polymer Solutions",
+        rating: 4.5,
+        text: "Excellent after-sales support and the machines have exceeded our expectations in terms of durability and performance.",
+        avatar: "https://randomuser.me/api/portraits/women/44.jpg"
+      },
+      {
+        name: "Amit Kumar",
+        company: "Elasto Tech Ltd.",
+        rating: 5,
+        text: "We've reduced our energy costs by 25% after switching to MechMix equipment while increasing output quality significantly.",
+        avatar: "https://randomuser.me/api/portraits/men/75.jpg"
+      }
+    ];
+
+    // DOM Elements
+    const loginModal = document.getElementById('loginModal');
+    const registerModal = document.getElementById('registerModal');
+    const userDropdown = document.getElementById('userDropdown');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const productsContainer = document.getElementById('productsContainer');
+    const featuresContainer = document.getElementById('featuresContainer');
+    const testimonialsContainer = document.getElementById('testimonialsContainer');
+    const userMenuBtn = document.getElementById('userMenuBtn');
+    const openLoginModal = document.getElementById('openLoginModal');
+    const closeLoginModal = document.getElementById('closeLoginModal');
+    const closeRegisterModal = document.getElementById('closeRegisterModal');
+    const showRegister = document.getElementById('showRegister');
+    const showLogin = document.getElementById('showLogin');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const contactForm = document.getElementById('contactForm');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const closeMobileMenu = document.getElementById('closeMobileMenu');
+    const mobileLoginBtn = document.getElementById('mobileLoginBtn');
+    const dashboard = document.getElementById('dashboard');
+
+    // Current user state
+    let currentUser = null;
+
+    // Initialize dynamic content
+    function initDynamicContent() {
+      // Animated counter for stats
+      animateCounter('machinesCount', 250, 2000);
+      animateCounter('experienceCount', 30, 2000);
+      animateCounter('countriesCount', 15, 2000);
+      
+      // Load products
+      renderProducts();
+      
+      // Load features
+      renderFeatures();
+      
+      // Load testimonials
+      renderTestimonials();
+    }
+
+    // Animate counter
+    function animateCounter(elementId, targetValue, duration) {
+      const element = document.getElementById(elementId);
+      let start = 0;
+      const increment = targetValue / (duration / 16);
+      
+      function updateCounter() {
+        start += increment;
+        if (start < targetValue) {
+          element.textContent = Math.floor(start);
+          requestAnimationFrame(updateCounter);
+        } else {
+          element.textContent = targetValue;
+        }
+      }
+      
+      updateCounter();
+    }
+
+    // Render products
+    function renderProducts() {
+      productsContainer.innerHTML = productsData.map(product => `
+        <div class="bg-white p-6 rounded-xl shadow-md card-hover transition-all duration-300" data-aos="fade-up">
+          <div class="relative overflow-hidden rounded-lg h-48 mb-6">
+            <img src="${product.image}" 
+                 class="w-full h-full object-cover transition duration-500 hover:scale-110" 
+                 alt="${product.name}">
+          </div>
+          <h3 class="text-xl font-semibold mb-2">${product.name}</h3>
+          <p class="text-gray-600 mb-2">${product.description}</p>
+          <p class="text-primary font-bold mb-4">${product.price}</p>
+          <div class="flex space-x-3">
+            <a href="#contact" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-800 transition text-center">
+              Enquire Now
+            </a>
+            <button class="saveProductBtn p-2 text-gray-600 hover:text-primary transition" data-id="${product.id}">
+              <i class="far fa-heart"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Render features
+    function renderFeatures() {
+      featuresContainer.innerHTML = featuresData.map(feature => `
+        <div class="bg-gray-50 p-6 rounded-lg" data-aos="fade-up">
+          <div class="text-primary text-3xl mb-4">
+            <i class="${feature.icon}"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">${feature.title}</h3>
+          <p class="text-gray-600">${feature.description}</p>
+        </div>
+      `).join('');
+    }
+
+    // Render testimonials
+    function renderTestimonials() {
+      testimonialsContainer.innerHTML = testimonialsData.map(testimonial => `
+        <div class="bg-white p-8 rounded-xl shadow-md" data-aos="fade-up">
+          <div class="flex items-center mb-4">
+            ${renderStars(testimonial.rating)}
+          </div>
+          <p class="text-gray-600 mb-6">"${testimonial.text}"</p>
+          <div class="flex items-center">
+            <div class="bg-gray-200 w-12 h-12 rounded-full overflow-hidden mr-4">
+              <img src="${testimonial.avatar}" alt="${testimonial.name}" class="w-full h-full object-cover">
+            </div>
+            <div>
+              <h4 class="font-semibold">${testimonial.name}</h4>
+              <p class="text-sm text-gray-500">${testimonial.company}</p>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Render star ratings
+    function renderStars(rating) {
+      let stars = '';
+      for (let i = 1; i <= 5; i++) {
+        if (i <= Math.floor(rating)) {
+          stars += '<i class="fas fa-star text-yellow-400"></i>';
+        } else if (i === Math.ceil(rating) && rating % 1 !== 0) {
+          stars += '<i class="fas fa-star-half-alt text-yellow-400"></i>';
+        } else {
+          stars += '<i class="far fa-star text-yellow-400"></i>';
+        }
+      }
+      return `<div class="text-yellow-400 mr-2">${stars}</div>`;
+    }
+
+    // Update UI based on auth state
+    function updateAuthUI(user) {
+      currentUser = user;
+      
+      if (user) {
+        // User is signed in
+        const displayName = user.displayName || user.email.split('@')[0];
+        const shortName = displayName.split(' ')[0];
+        const initial = displayName.charAt(0).toUpperCase();
+        
+        // Update UI elements
+        document.getElementById('userShortName').textContent = shortName;
+        document.getElementById('userName').textContent = displayName;
+        document.getElementById('userEmail').textContent = user.email;
+        document.getElementById('userInitial').textContent = initial;
+        document.getElementById('dashboardUserName').textContent = displayName;
+        
+        // Show user menu, hide login button
+        userMenuBtn.classList.remove('hidden');
+        openLoginModal.classList.add('hidden');
+        
+        // Load user data
+        loadUserData(user.uid);
       } else {
-        backToTopButton.classList.add('hidden');
+        // User is signed out
+        userMenuBtn.classList.add('hidden');
+        openLoginModal.classList.remove('hidden');
+        dashboard.classList.add('hidden');
+        
+        // Show main content
+        document.querySelectorAll('section[id]').forEach(section => {
+          if (section.id !== 'dashboard') {
+            section.classList.remove('hidden');
+          }
+        });
+      }
+    }
+
+    // Load user data from Firestore
+    async function loadUserData(userId) {
+      try {
+        const userDoc = await db.collection('users').doc(userId).get();
+        if (userDoc.exists) {
+          const userData = userDoc.data();
+          
+          // Update dashboard counts
+          document.getElementById('quoteCount').textContent = userData.quotes || 0;
+          document.getElementById('savedCount').textContent = userData.savedProducts || 0;
+          document.getElementById('messageCount').textContent = userData.unreadMessages || 0;
+          
+          // Load activity
+          if (userData.recentActivity) {
+            renderActivity(userData.recentActivity);
+          }
+        }
+      } catch (error) {
+        console.error("Error loading user data:", error);
+      }
+    }
+
+    // Render activity list
+    function renderActivity(activities) {
+      const activityList = document.getElementById('activityList');
+      if (activities.length === 0) {
+        activityList.innerHTML = '<p class="text-gray-500 text-center py-4">No recent activity</p>';
+        return;
+      }
+      
+      activityList.innerHTML = activities.map(activity => `
+        <div class="flex items-start border-b border-gray-100 pb-4 last:border-0 last:pb-0">
+          <div class="bg-primary bg-opacity-10 p-2 rounded-lg mr-4">
+            <i class="${activity.icon} text-primary"></i>
+          </div>
+          <div>
+            <p class="font-medium">${activity.title}</p>
+            <p class="text-sm text-gray-500">${activity.description}</p>
+            <p class="text-xs text-gray-400 mt-1">${activity.time}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Modal Functions
+    function openModal(modal) {
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(modal) {
+      modal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Event Listeners
+    openLoginModal.addEventListener('click', () => openModal(loginModal));
+    closeLoginModal.addEventListener('click', () => closeModal(loginModal));
+    closeRegisterModal.addEventListener('click', () => closeModal(registerModal));
+    showRegister.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal(loginModal);
+      openModal(registerModal);
+    });
+    showLogin.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal(registerModal);
+      openModal(loginModal);
+    });
+
+    // Mobile menu
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.remove('hidden');
+    });
+
+    closeMobileMenu.addEventListener('click', () => {
+      mobileMenu.classList.add('hidden');
+    });
+
+    mobileLoginBtn.addEventListener('click', () => {
+      mobileMenu.classList.add('hidden');
+      openModal(loginModal);
+    });
+
+    // User dropdown
+    userMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userDropdown.classList.toggle('hidden');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!userDropdown.contains(e.target) && !userMenuBtn.contains(e.target)) {
+        userDropdown.classList.add('hidden');
       }
     });
-    
-    backToTopButton.addEventListener('click', function() {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
+
+    // Dashboard navigation
+    document.getElementById('dashboardLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      userDropdown.classList.add('hidden');
+      
+      // Hide all sections
+      document.querySelectorAll('section[id]').forEach(section => {
+        section.classList.add('hidden');
+      });
+      
+      // Show dashboard
+      dashboard.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Home navigation
+    document.querySelectorAll('a[href="#home"]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        userDropdown.classList.add('hidden');
+        
+        // Show all sections except dashboard
+        document.querySelectorAll('section[id]').forEach(section => {
+          if (section.id !== 'dashboard') {
+            section.classList.remove('hidden');
+          } else {
+            section.classList.add('hidden');
+          }
+        });
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     });
-    
-    // Form submission (example)
-    const contactForm = document.querySelector('form');
-    if (contactForm) {
-      contactForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        alert('Thank you for your message! We will contact you soon.');
-        this.reset();
+
+    // Login form submission
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      const messageDiv = document.getElementById('loginMessage');
+      const btnText = document.getElementById('loginBtnText');
+      const spinner = document.getElementById('loginSpinner');
+      
+      btnText.textContent = 'Signing In...';
+      spinner.classList.remove('hidden');
+      messageDiv.classList.add('hidden');
+      
+      try {
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        messageDiv.classList.remove('hidden');
+        messageDiv.className = 'p-3 rounded-lg text-sm bg-green-100 text-green-700';
+        messageDiv.textContent = 'Login successful!';
+        
+        setTimeout(() => {
+          closeModal(loginModal);
+          loginForm.reset();
+          messageDiv.classList.add('hidden');
+          btnText.textContent = 'Sign In';
+          spinner.classList.add('hidden');
+        }, 1500);
+        
+      } catch (error) {
+        messageDiv.classList.remove('hidden');
+        messageDiv.className = 'p-3 rounded-lg text-sm bg-red-100 text-red-700';
+        
+        switch (error.code) {
+          case 'auth/user-not-found':
+            messageDiv.textContent = 'No account found with this email.';
+            break;
+          case 'auth/wrong-password':
+            messageDiv.textContent = 'Incorrect password.';
+            break;
+          default:
+            messageDiv.textContent = error.message;
+        }
+        
+        btnText.textContent = 'Sign In';
+        spinner.classList.add('hidden');
+      }
+    });
+
+    // Register form submission
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const firstName = document.getElementById('registerFirstName').value;
+      const lastName = document.getElementById('registerLastName').value;
+      const email = document.getElementById('registerEmail').value;
+      const phone = document.getElementById('registerPhone').value;
+      const company = document.getElementById('registerCompany').value;
+      const password = document.getElementById('registerPassword').value;
+      const confirmPassword = document.getElementById('registerConfirmPassword').value;
+      const messageDiv = document.getElementById('registerMessage');
+      const btnText = document.getElementById('registerBtnText');
+      const spinner = document.getElementById('registerSpinner');
+      
+      // Validate passwords match
+      if (password !== confirmPassword) {
+        messageDiv.classList.remove('hidden');
+        messageDiv.className = 'p-3 rounded-lg text-sm bg-red-100 text-red-700';
+        messageDiv.textContent = 'Passwords do not match.';
+        return;
+      }
+      
+      btnText.textContent = 'Creating Account...';
+      spinner.classList.remove('hidden');
+      messageDiv.classList.add('hidden');
+      
+      try {
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        
+        // Update user profile
+        await userCredential.user.updateProfile({
+          displayName: `${firstName} ${lastName}`
+        });
+        
+        // Save additional user data to Firestore
+        await db.collection('users').doc(userCredential.user.uid).set({
+          firstName,
+          lastName,
+          email,
+          phone,
+          company,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          quotes: 0,
+          savedProducts: 0,
+          unreadMessages: 0,
+          recentActivity: []
+        });
+        
+        messageDiv.classList.remove('hidden');
+        messageDiv.className = 'p-3 rounded-lg text-sm bg-green-100 text-green-700';
+        messageDiv.textContent = 'Account created successfully!';
+        
+        setTimeout(() => {
+          closeModal(registerModal);
+          registerForm.reset();
+          messageDiv.classList.add('hidden');
+          btnText.textContent = 'Create Account';
+          spinner.classList.add('hidden');
+        }, 1500);
+        
+      } catch (error) {
+        messageDiv.classList.remove('hidden');
+        messageDiv.className = 'p-3 rounded-lg text-sm bg-red-100 text-red-700';
+        
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            messageDiv.textContent = 'Email already registered. Please login.';
+            break;
+          case 'auth/weak-password':
+            messageDiv.textContent = 'Password should be at least 6 characters.';
+            break;
+          default:
+            messageDiv.textContent = error.message;
+        }
+        
+        btnText.textContent = 'Create Account';
+        spinner.classList.add('hidden');
+      }
+    });
+
+    // Contact form submission
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const company = document.getElementById('company').value;
+      const message = document.getElementById('message').value;
+      const messageDiv = document.getElementById('contactMessage');
+      const submitBtn = contactForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
+      submitBtn.disabled = true;
+      messageDiv.classList.add('hidden');
+      
+      try {
+        // Save to Firestore if user is logged in
+        if (currentUser) {
+          await db.collection('enquiries').add({
+            userId: currentUser.uid,
+            userName: currentUser.displayName,
+            userEmail: currentUser.email,
+            name,
+            email,
+            phone,
+            company,
+            message,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            status: 'new'
+          });
+          
+          // Update user's quote count
+          await db.collection('users').doc(currentUser.uid).update({
+            quotes: firebase.firestore.FieldValue.increment(1),
+            recentActivity: firebase.firestore.FieldValue.arrayUnion({
+              icon: 'fas fa-file-invoice',
+              title: 'New Quote Request',
+              description: `Request for ${company || 'product information'}`,
+              time: new Date().toLocaleDateString()
+            })
+          });
+        }
+        
+        // Simulate sending email
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        messageDiv.classList.remove('hidden');
+        messageDiv.className = 'p-3 rounded-lg text-sm bg-green-100 text-green-700';
+        messageDiv.textContent = 'Thank you! Your message has been sent. We\'ll contact you soon.';
+        
+        contactForm.reset();
+        
+        // Reset button after delay
+        setTimeout(() => {
+          submitBtn.innerHTML = originalText;
+          submitBtn.disabled = false;
+        }, 2000);
+        
+      } catch (error) {
+        messageDiv.classList.remove('hidden');
+        messageDiv.className = 'p-3 rounded-lg text-sm bg-red-100 text-red-700';
+        messageDiv.textContent = 'Error sending message. Please try again.';
+        
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+
+    // Logout
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        await auth.signOut();
+        userDropdown.classList.add('hidden');
+      } catch (error) {
+        console.error("Logout error:", error);
+      }
+    });
+
+    // Save product to favorites
+    document.addEventListener('click', async (e) => {
+      if (e.target.closest('.saveProductBtn')) {
+        if (!currentUser) {
+          openModal(loginModal);
+          return;
+        }
+        
+        const btn = e.target.closest('.saveProductBtn');
+        const productId = btn.dataset.id;
+        const icon = btn.querySelector('i');
+        
+        // Toggle icon
+        if (icon.classList.contains('far')) {
+          icon.classList.remove('far');
+          icon.classList.add('fas');
+          icon.style.color = '#b91c1c';
+          
+          // Save to user's favorites in Firestore
+          try {
+            await db.collection('users').doc(currentUser.uid).update({
+              savedProducts: firebase.firestore.FieldValue.increment(1)
+            });
+            
+            // Update UI
+            document.getElementById('savedCount').textContent = 
+              parseInt(document.getElementById('savedCount').textContent) + 1;
+              
+          } catch (error) {
+            console.error("Error saving product:", error);
+          }
+        } else {
+          icon.classList.remove('fas');
+          icon.classList.add('far');
+          icon.style.color = '';
+          
+          // Remove from favorites
+          try {
+            await db.collection('users').doc(currentUser.uid).update({
+              savedProducts: firebase.firestore.FieldValue.increment(-1)
+            });
+            
+            // Update UI
+            document.getElementById('savedCount').textContent = 
+              parseInt(document.getElementById('savedCount').textContent) - 1;
+              
+          } catch (error) {
+            console.error("Error removing product:", error);
+          }
+        }
+      }
+    });
+
+    // Auth state observer
+    auth.onAuthStateChanged((user) => {
+      updateAuthUI(user);
+    });
+
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', () => {
+      initDynamicContent();
+      
+      // Smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+          
+          const targetElement = document.querySelector(targetId);
+          if (targetElement) {
+            window.scrollTo({
+              top: targetElement.offsetTop - 80,
+              behavior: 'smooth'
+            });
+          }
+        });
       });
-    }
+      
+      // Close modals on ESC key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeModal(loginModal);
+          closeModal(registerModal);
+          mobileMenu.classList.add('hidden');
+          userDropdown.classList.add('hidden');
+        }
+      });
+    });
   </script>
-  
 </body>
 </html>
