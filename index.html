@@ -2,14 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>MechMix | Premium Rubber Mixing Solutions</title>
+  <title>Harshit Engineering Works | Premium Rubber Mixing Solutions</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Industrial rubber mixer machines for polymer processing">
-  
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -20,7 +15,7 @@
           colors: {
             primary: '#b91c1c',
             secondary: '#f59e0b',
-            dark: '#1f2937',
+            dark: '#1e293b',
           },
           fontFamily: {
             sans: ['Inter', 'sans-serif'],
@@ -28,15 +23,32 @@
           animation: {
             'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
             'float': 'float 6s ease-in-out infinite',
-            'slide-in': 'slideIn 0.3s ease-out',
+            'spin-slow': 'spin 8s linear infinite',
+            'bounce-slow': 'bounce 2s infinite',
+            'wiggle': 'wiggle 1s ease-in-out infinite',
+            'slide-in': 'slideIn 0.5s ease-out',
+            'fade-in': 'fadeIn 1s ease-out',
+            'slide-up': 'slideUp 0.5s ease-out',
           },
           keyframes: {
             float: {
               '0%, 100%': { transform: 'translateY(0)' },
               '50%': { transform: 'translateY(-20px)' },
             },
+            wiggle: {
+              '0%, 100%': { transform: 'rotate(-3deg)' },
+              '50%': { transform: 'rotate(3deg)' },
+            },
             slideIn: {
-              '0%': { transform: 'translateY(-10px)', opacity: '0' },
+              '0%': { transform: 'translateX(-100%)' },
+              '100%': { transform: 'translateX(0)' },
+            },
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideUp: {
+              '0%': { transform: 'translateY(20px)', opacity: '0' },
               '100%': { transform: 'translateY(0)', opacity: '1' },
             }
           }
@@ -48,11 +60,13 @@
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- AOS Animation -->
-  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
-  
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
   
   <style>
     .hero-gradient {
@@ -68,303 +82,429 @@
       transform: translateY(-10px);
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     }
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
+    .glow {
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
     }
-    .modal.active {
-      display: flex;
+    .gradient-text {
+      background: linear-gradient(90deg, #b91c1c 0%, #f59e0b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-    .glass-effect {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+    .pulse-ring {
+      animation: pulse-ring 2s infinite;
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.8); opacity: 0.8; }
+      100% { transform: scale(1.2); opacity: 0; }
+    }
+    .floating-element {
+      animation: float 6s ease-in-out infinite;
+    }
+    .machine-part {
+      transform-origin: center;
+      animation: spin-slow 8s linear infinite;
+    }
+    .typewriter {
+      overflow: hidden;
+      border-right: .15em solid #f59e0b;
+      white-space: nowrap;
+      animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+    }
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+    @keyframes blink-caret {
+      from, to { border-color: transparent }
+      50% { border-color: #f59e0b; }
     }
   </style>
 </head>
 <body class="font-sans bg-gray-50 text-gray-800 scroll-smooth">
 
-  <!-- Login Modal -->
-  <div id="loginModal" class="modal">
-    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden animate-slide-in">
-      <div class="bg-primary text-white p-6">
-        <h2 class="text-2xl font-bold">Welcome Back</h2>
-        <p class="text-primary-100">Sign in to your account</p>
-      </div>
-      
-      <div class="p-6">
-        <form id="loginForm" class="space-y-4">
-          <div>
-            <label for="loginEmail" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-            <input type="email" id="loginEmail" required 
-                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition">
-          </div>
-          <div>
-            <label for="loginPassword" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input type="password" id="loginPassword" required 
-                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition">
-          </div>
-          <div class="flex items-center justify-between">
-            <label class="flex items-center">
-              <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
-              <span class="ml-2 text-sm text-gray-600">Remember me</span>
-            </label>
-            <a href="#" class="text-sm text-primary hover:text-red-800">Forgot password?</a>
-          </div>
-          
-          <div id="loginMessage" class="hidden p-3 rounded-lg text-sm"></div>
-          
-          <button type="submit" class="w-full bg-primary text-white font-semibold px-6 py-3 rounded-lg hover:bg-red-800 transition">
-            <span id="loginBtnText">Sign In</span>
-            <i class="fas fa-spinner fa-spin ml-2 hidden" id="loginSpinner"></i>
-          </button>
-        </form>
-        
-        <div class="mt-6 text-center">
-          <p class="text-gray-600">Don't have an account? 
-            <a href="#" id="showRegister" class="text-primary font-semibold hover:text-red-800">Sign up</a>
-          </p>
-        </div>
-        
-        <div class="mt-6 pt-6 border-t border-gray-200">
-          <button id="closeLoginModal" class="w-full text-gray-600 hover:text-gray-800 transition">
-            <i class="fas fa-times mr-2"></i> Close
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Register Modal -->
-  <div id="registerModal" class="modal">
-    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden animate-slide-in">
-      <div class="bg-secondary text-gray-900 p-6">
-        <h2 class="text-2xl font-bold">Create Account</h2>
-        <p>Register for exclusive access</p>
-      </div>
-      
-      <div class="p-6">
-        <form id="registerForm" class="space-y-4">
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label for="registerFirstName" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-              <input type="text" id="registerFirstName" required 
-                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-            </div>
-            <div>
-              <label for="registerLastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-              <input type="text" id="registerLastName" required 
-                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-            </div>
-          </div>
-          
-          <div>
-            <label for="registerEmail" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-            <input type="email" id="registerEmail" required 
-                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-          </div>
-          
-          <div>
-            <label for="registerPhone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-            <input type="tel" id="registerPhone" required 
-                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-          </div>
-          
-          <div>
-            <label for="registerCompany" class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
-            <input type="text" id="registerCompany" required 
-                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-          </div>
-          
-          <div>
-            <label for="registerPassword" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input type="password" id="registerPassword" required minlength="6"
-                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-          </div>
-          
-          <div>
-            <label for="registerConfirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-            <input type="password" id="registerConfirmPassword" required 
-                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-          </div>
-          
-          <div id="registerMessage" class="hidden p-3 rounded-lg text-sm"></div>
-          
-          <button type="submit" class="w-full bg-secondary text-gray-900 font-semibold px-6 py-3 rounded-lg hover:bg-yellow-500 transition">
-            <span id="registerBtnText">Create Account</span>
-            <i class="fas fa-spinner fa-spin ml-2 hidden" id="registerSpinner"></i>
-          </button>
-        </form>
-        
-        <div class="mt-6 text-center">
-          <p class="text-gray-600">Already have an account? 
-            <a href="#" id="showLogin" class="text-secondary font-semibold hover:text-yellow-600">Sign in</a>
-          </p>
-        </div>
-        
-        <div class="mt-6 pt-6 border-t border-gray-200">
-          <button id="closeRegisterModal" class="w-full text-gray-600 hover:text-gray-800 transition">
-            <i class="fas fa-times mr-2"></i> Close
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- User Profile Dropdown -->
-  <div id="userDropdown" class="hidden absolute right-4 top-16 bg-white rounded-xl shadow-2xl w-64 overflow-hidden z-50 animate-slide-in">
-    <div class="p-4 border-b border-gray-200">
-      <div class="flex items-center">
-        <div class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-bold text-lg mr-3">
-          <span id="userInitial">U</span>
-        </div>
-        <div>
-          <h4 class="font-semibold" id="userName">User Name</h4>
-          <p class="text-sm text-gray-500" id="userEmail">user@email.com</p>
-        </div>
-      </div>
-    </div>
-    
-    <div class="p-2">
-      <a href="#" id="dashboardLink" class="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100 transition">
-        <i class="fas fa-tachometer-alt text-primary mr-3"></i>
-        Dashboard
-      </a>
-      <a href="#" id="profileLink" class="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100 transition">
-        <i class="fas fa-user-circle text-primary mr-3"></i>
-        My Profile
-      </a>
-      <a href="#" id="quotesLink" class="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100 transition">
-        <i class="fas fa-file-invoice text-primary mr-3"></i>
-        My Quotes
-      </a>
-    </div>
-    
-    <div class="p-2 border-t border-gray-200">
-      <button id="logoutBtn" class="w-full flex items-center justify-center px-3 py-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition">
-        <i class="fas fa-sign-out-alt mr-2"></i>
-        Sign Out
-      </button>
-    </div>
-  </div>
-
   <!-- Navigation -->
-  <header class="bg-white shadow-lg sticky top-0 z-50">
+  <header class="bg-white shadow-lg sticky top-0 z-50 animate-slide-in">
     <div class="container mx-auto px-4 py-3 flex justify-between items-center">
       <div class="flex items-center">
-        <svg class="w-8 h-8 text-primary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-8 h-8 text-primary mr-2 animate-spin-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
         </svg>
-        <span class="text-xl font-bold text-primary">MechMix</span>
+        <span class="text-xl font-bold text-primary">Harshit Engineering Works</span>
       </div>
       
       <nav class="hidden md:flex space-x-8 items-center">
-        <a href="#home" class="font-medium hover:text-primary transition">Home</a>
-        <a href="#products" class="font-medium hover:text-primary transition">Products</a>
-        <a href="#features" class="font-medium hover:text-primary transition">Features</a>
-        <a href="#testimonials" class="font-medium hover:text-primary transition">Testimonials</a>
-        <a href="#contact" class="font-medium hover:text-primary transition">Contact</a>
+        <a href="#home" class="font-medium hover:text-primary transition transform hover:scale-105">Home</a>
+        <a href="#products" class="font-medium hover:text-primary transition transform hover:scale-105">Products</a>
+        <a href="#features" class="font-medium hover:text-primary transition transform hover:scale-105">Features</a>
+        <a href="#testimonials" class="font-medium hover:text-primary transition transform hover:scale-105">Testimonials</a>
+        <a href="#contact" class="font-medium hover:text-primary transition transform hover:scale-105">Contact</a>
         
-        <div class="relative">
-          <button id="userMenuBtn" class="hidden items-center bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-full transition">
-            <i class="fas fa-user-circle text-primary mr-2"></i>
-            <span id="userShortName">Account</span>
-            <i class="fas fa-chevron-down ml-2 text-sm"></i>
-          </button>
-          
-          <button id="openLoginModal" class="bg-primary text-white px-6 py-2 rounded-full hover:bg-red-800 transition">
+        <!-- User/Auth Buttons -->
+        <div id="authButtons" class="flex items-center space-x-4">
+          <button id="loginBtn" class="bg-primary text-white px-4 py-2 rounded-full hover:bg-red-800 transition transform hover:scale-105 animate-pulse-slow">
             <i class="fas fa-sign-in-alt mr-2"></i>Login
+          </button>
+          <button id="dashboardBtn" class="hidden bg-secondary text-gray-900 px-4 py-2 rounded-full hover:bg-yellow-500 transition transform hover:scale-105">
+            <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+          </button>
+          <button id="logoutBtn" class="hidden bg-gray-800 text-white px-4 py-2 rounded-full hover:bg-gray-900 transition transform hover:scale-105">
+            <i class="fas fa-sign-out-alt mr-2"></i>Logout
           </button>
         </div>
       </nav>
       
-      <button class="md:hidden text-gray-700" id="mobileMenuBtn">
+      <button id="mobileMenuBtn" class="md:hidden text-gray-700 hover:text-primary transition">
         <i class="fas fa-bars text-2xl"></i>
       </button>
     </div>
   </header>
 
   <!-- Mobile Menu -->
-  <div id="mobileMenu" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden">
-    <div class="absolute right-0 top-0 h-full w-64 bg-white shadow-xl animate-slide-in">
-      <div class="p-6">
-        <div class="flex justify-between items-center mb-8">
-          <span class="text-xl font-bold text-primary">Menu</span>
-          <button id="closeMobileMenu" class="text-gray-600 hover:text-gray-800">
-            <i class="fas fa-times text-2xl"></i>
-          </button>
+  <div id="mobileMenu" class="md:hidden fixed inset-0 bg-white z-50 hidden transform transition-transform duration-300">
+    <div class="flex justify-between items-center p-4 border-b">
+      <span class="text-xl font-bold text-primary">Harshit Engineering Works</span>
+      <button id="closeMenuBtn" class="text-gray-700">
+        <i class="fas fa-times text-2xl"></i>
+      </button>
+    </div>
+    <div class="p-6 space-y-6">
+      <a href="#home" class="block text-lg font-medium hover:text-primary transition">Home</a>
+      <a href="#products" class="block text-lg font-medium hover:text-primary transition">Products</a>
+      <a href="#features" class="block text-lg font-medium hover:text-primary transition">Features</a>
+      <a href="#testimonials" class="block text-lg font-medium hover:text-primary transition">Testimonials</a>
+      <a href="#contact" class="block text-lg font-medium hover:text-primary transition">Contact</a>
+      <div class="pt-6 space-y-4">
+        <button id="mobileLoginBtn" class="w-full bg-primary text-white px-6 py-3 rounded-full hover:bg-red-800 transition">
+          <i class="fas fa-sign-in-alt mr-2"></i>Login
+        </button>
+        <button id="mobileDashboardBtn" class="w-full hidden bg-secondary text-gray-900 px-6 py-3 rounded-full hover:bg-yellow-500 transition">
+          <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+        </button>
+        <button id="mobileLogoutBtn" class="w-full hidden bg-gray-800 text-white px-6 py-3 rounded-full hover:bg-gray-900 transition">
+          <i class="fas fa-sign-out-alt mr-2"></i>Logout
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-xl max-w-md w-full p-8 animate-slide-up">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold gradient-text">Welcome Back!</h2>
+        <button id="closeLoginModal" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+      
+      <form id="emailLoginForm" class="space-y-4 mb-6">
+        <div>
+          <label for="loginEmail" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+          <input type="email" id="loginEmail" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition" required>
+        </div>
+        <div>
+          <label for="loginPassword" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <input type="password" id="loginPassword" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition" required>
+        </div>
+        <button type="submit" class="w-full bg-primary text-white font-semibold px-6 py-3 rounded-lg hover:bg-red-800 transition transform hover:scale-[1.01]">
+          Sign In <i class="fas fa-sign-in-alt ml-2"></i>
+        </button>
+      </form>
+      
+      <div class="text-center mb-6">
+        <div class="relative">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-300"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-2 bg-white text-gray-500">Or continue with</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-2 gap-4 mb-6">
+        <button id="googleLoginBtn" class="flex items-center justify-center bg-white border border-gray-300 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-50 transition transform hover:scale-105">
+          <i class="fab fa-google text-red-600 mr-2"></i> Google
+        </button>
+        <button id="facebookLoginBtn" class="flex items-center justify-center bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition transform hover:scale-105">
+          <i class="fab fa-facebook-f mr-2"></i> Facebook
+        </button>
+      </div>
+      
+      <div class="text-center">
+        <button id="demoLoginBtn" class="w-full bg-gradient-to-r from-primary to-secondary text-white font-semibold px-6 py-3 rounded-lg hover:opacity-90 transition transform hover:scale-[1.01] animate-pulse-slow">
+          <i class="fas fa-rocket mr-2"></i> Try Demo Account
+        </button>
+        <p class="text-sm text-gray-500 mt-2">Experience all features with pre-loaded data</p>
+      </div>
+      
+      <div class="mt-6 text-center">
+        <p class="text-sm text-gray-600">Don't have an account? 
+          <button id="showRegisterBtn" class="text-primary font-medium hover:underline">Sign up here</button>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Register Modal -->
+  <div id="registerModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-xl max-w-md w-full p-8 animate-slide-up">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold gradient-text">Create Account</h2>
+        <button id="closeRegisterModal" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+      
+      <form id="registerForm" class="space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="registerName" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+            <input type="text" id="registerName" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition" required>
+          </div>
+          <div>
+            <label for="registerCompany" class="block text-sm font-medium text-gray-700 mb-1">Company</label>
+            <input type="text" id="registerCompany" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition" required>
+          </div>
+        </div>
+        <div>
+          <label for="registerEmail" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+          <input type="email" id="registerEmail" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition" required>
+        </div>
+        <div>
+          <label for="registerPhone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+          <input type="tel" id="registerPhone" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition" required>
+        </div>
+        <div>
+          <label for="registerPassword" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <input type="password" id="registerPassword" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition" required>
+        </div>
+        <button type="submit" class="w-full bg-primary text-white font-semibold px-6 py-3 rounded-lg hover:bg-red-800 transition transform hover:scale-[1.01]">
+          Create Account <i class="fas fa-user-plus ml-2"></i>
+        </button>
+      </form>
+      
+      <div class="mt-6 text-center">
+        <p class="text-sm text-gray-600">Already have an account? 
+          <button id="showLoginBtn" class="text-primary font-medium hover:underline">Sign in here</button>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Dashboard Modal -->
+  <div id="dashboardModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-xl max-w-4xl w-full p-8 animate-slide-up max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold gradient-text">User Dashboard</h2>
+        <button id="closeDashboardModal" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+      
+      <!-- User Info -->
+      <div class="bg-gradient-to-r from-primary to-secondary p-6 rounded-xl text-white mb-6">
+        <div class="flex items-center">
+          <div class="bg-white w-16 h-16 rounded-full flex items-center justify-center mr-4">
+            <i class="fas fa-user-cog text-primary text-2xl"></i>
+          </div>
+          <div>
+            <h3 id="dashboardUserName" class="text-xl font-bold">Welcome, User!</h3>
+            <p id="dashboardUserEmail" class="opacity-90">user@example.com</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Dashboard Stats -->
+      <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 animate-fade-in">
+          <div class="flex items-center">
+            <div class="bg-primary bg-opacity-10 p-3 rounded-full mr-4">
+              <i class="fas fa-shopping-cart text-primary text-xl"></i>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600">Active Quotes</p>
+              <p id="activeQuotes" class="text-2xl font-bold">3</p>
+            </div>
+          </div>
         </div>
         
-        <nav class="space-y-4">
-          <a href="#home" class="block py-3 px-4 rounded-lg hover:bg-gray-100 transition">Home</a>
-          <a href="#products" class="block py-3 px-4 rounded-lg hover:bg-gray-100 transition">Products</a>
-          <a href="#features" class="block py-3 px-4 rounded-lg hover:bg-gray-100 transition">Features</a>
-          <a href="#testimonials" class="block py-3 px-4 rounded-lg hover:bg-gray-100 transition">Testimonials</a>
-          <a href="#contact" class="block py-3 px-4 rounded-lg hover:bg-gray-100 transition">Contact</a>
-          
-          <div class="pt-6 border-t border-gray-200">
-            <button id="mobileLoginBtn" class="w-full bg-primary text-white px-6 py-3 rounded-lg hover:bg-red-800 transition">
-              <i class="fas fa-sign-in-alt mr-2"></i>Login / Register
-            </button>
+        <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 animate-fade-in" style="animation-delay: 0.1s">
+          <div class="flex items-center">
+            <div class="bg-secondary bg-opacity-10 p-3 rounded-full mr-4">
+              <i class="fas fa-cog text-secondary text-xl"></i>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600">Machines Viewed</p>
+              <p id="machinesViewed" class="text-2xl font-bold">12</p>
+            </div>
           </div>
-        </nav>
+        </div>
+        
+        <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 animate-fade-in" style="animation-delay: 0.2s">
+          <div class="flex items-center">
+            <div class="bg-green-500 bg-opacity-10 p-3 rounded-full mr-4">
+              <i class="fas fa-calendar-check text-green-500 text-xl"></i>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600">Support Tickets</p>
+              <p id="supportTickets" class="text-2xl font-bold">2</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Recent Activity -->
+      <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6 animate-fade-in" style="animation-delay: 0.3s">
+        <h3 class="text-lg font-semibold mb-4">Recent Activity</h3>
+        <div class="space-y-4">
+          <div class="flex items-center p-3 bg-white rounded-lg">
+            <div class="bg-primary bg-opacity-10 p-2 rounded-full mr-3">
+              <i class="fas fa-file-invoice text-primary"></i>
+            </div>
+            <div class="flex-1">
+              <p class="font-medium">Quote request sent for Internal Mixer</p>
+              <p class="text-sm text-gray-600">2 days ago</p>
+            </div>
+            <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Pending</span>
+          </div>
+          
+          <div class="flex items-center p-3 bg-white rounded-lg">
+            <div class="bg-secondary bg-opacity-10 p-2 rounded-full mr-3">
+              <i class="fas fa-eye text-secondary"></i>
+            </div>
+            <div class="flex-1">
+              <p class="font-medium">Viewed Twin-Screw Extruder specifications</p>
+              <p class="text-sm text-gray-600">1 week ago</p>
+            </div>
+          </div>
+          
+          <div class="flex items-center p-3 bg-white rounded-lg">
+            <div class="bg-green-500 bg-opacity-10 p-2 rounded-full mr-3">
+              <i class="fas fa-headset text-green-500"></i>
+            </div>
+            <div class="flex-1">
+              <p class="font-medium">Support ticket resolved</p>
+              <p class="text-sm text-gray-600">2 weeks ago</p>
+            </div>
+            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Resolved</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Quick Actions -->
+      <div class="grid md:grid-cols-2 gap-4">
+        <button id="newQuoteBtn" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-red-800 transition transform hover:scale-105 flex items-center justify-center">
+          <i class="fas fa-plus-circle mr-2"></i> New Quote Request
+        </button>
+        <button id="supportBtn" class="bg-secondary text-gray-900 px-6 py-3 rounded-lg hover:bg-yellow-500 transition transform hover:scale-105 flex items-center justify-center">
+          <i class="fas fa-headset mr-2"></i> Contact Support
+        </button>
       </div>
     </div>
   </div>
 
   <!-- Hero Section -->
-  <section id="home" class="min-h-screen flex items-center justify-center parallax" style="background-image: url('https://images.unsplash.com/photo-1602311865240-514c6b25d517?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');">
+  <section id="home" class="min-h-screen flex items-center justify-center parallax relative overflow-hidden" style="background-image: url('https://images.unsplash.com/photo-1602311865240-514c6b25d517?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');">
     <div class="hero-gradient absolute inset-0"></div>
     
-    <div class="container mx-auto px-4 text-center relative z-10" data-aos="fade-up">
-      <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
+    <!-- Animated Floating Elements -->
+    <div class="floating-element absolute top-20 left-10 text-4xl text-secondary opacity-30 animate-float">
+      <i class="fas fa-cog"></i>
+    </div>
+    <div class="floating-element absolute bottom-32 right-20 text-5xl text-white opacity-20 animate-float" style="animation-delay: 1s">
+      <i class="fas fa-industry"></i>
+    </div>
+    <div class="floating-element absolute top-40 right-32 text-3xl text-secondary opacity-30 animate-float" style="animation-delay: 2s">
+      <i class="fas fa-tools"></i>
+    </div>
+    
+    <div class="container mx-auto px-4 text-center relative z-10 animate-fade-in">
+      <div class="mb-8">
+        <span class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-full text-sm font-medium animate-pulse-slow">
+          <i class="fas fa-bolt mr-1"></i> Since 1993
+        </span>
+      </div>
+      
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 typewriter">
         Industrial <span class="text-secondary">Rubber Mixers</span>
       </h1>
-      <p class="text-xl md:text-2xl text-gray-200 mb-8 max-w-3xl mx-auto">
+      <p class="text-xl md:text-2xl text-gray-200 mb-8 max-w-3xl mx-auto animate-slide-up">
         Precision-engineered mixing solutions for rubber, polymer, and elastomer processing industries
       </p>
-      <div class="flex flex-col sm:flex-row justify-center gap-4">
-        <a href="#products" class="bg-secondary text-gray-900 font-semibold px-8 py-4 rounded-full hover:bg-yellow-500 transition transform hover:scale-105 animate-pulse-slow">
-          Explore Products <i class="fas fa-arrow-right ml-2"></i>
+      <div class="flex flex-col sm:flex-row justify-center gap-4 animate-slide-up" style="animation-delay: 0.2s">
+        <a href="#products" class="bg-secondary text-gray-900 font-semibold px-8 py-4 rounded-full hover:bg-yellow-500 transition transform hover:scale-105 animate-pulse-slow glow">
+          Explore Products <i class="fas fa-arrow-right ml-2 animate-wiggle"></i>
         </a>
-        <a href="#contact" class="bg-transparent border-2 border-white text-white font-semibold px-8 py-4 rounded-full hover:bg-white hover:text-gray-900 transition">
-          Get Quote <i class="fas fa-phone ml-2"></i>
+        <a href="#contact" class="bg-transparent border-2 border-white text-white font-semibold px-8 py-4 rounded-full hover:bg-white hover:text-gray-900 transition transform hover:scale-105">
+          Get Quote <i class="fas fa-phone ml-2 animate-bounce-slow"></i>
         </a>
+      </div>
+      
+      <!-- Animated Stats -->
+      <div class="grid grid-cols-3 gap-4 mt-16 max-w-xl mx-auto">
+        <div class="text-center">
+          <div class="text-3xl font-bold text-white mb-1 animate-count" data-target="30">0</div>
+          <div class="text-gray-300 text-sm">Years Experience</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl font-bold text-white mb-1 animate-count" data-target="500">0</div>
+          <div class="text-gray-300 text-sm">Machines Installed</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl font-bold text-white mb-1 animate-count" data-target="25">0</div>
+          <div class="text-gray-300 text-sm">Countries Served</div>
+        </div>
       </div>
     </div>
     
     <a href="#products" class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-white">
-      <i class="fas fa-chevron-down text-2xl"></i>
+      <div class="relative">
+        <div class="pulse-ring absolute inset-0 rounded-full bg-secondary opacity-20"></div>
+        <i class="fas fa-chevron-down text-2xl relative z-10"></i>
+      </div>
     </a>
   </section>
 
-  <!-- Dynamic Stats Section -->
+  <!-- Stats Section -->
   <section class="py-16 bg-white">
     <div class="container mx-auto px-4">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-        <div class="p-6" data-aos="fade-up" data-aos-delay="100">
-          <div class="text-4xl font-bold text-primary mb-2"><span id="machinesCount">0</span>+</div>
-          <div class="text-gray-600">Machines Installed</div>
+        <div class="p-6 animate-fade-in" data-delay="100">
+          <div class="relative inline-block mb-4">
+            <div class="absolute inset-0 bg-primary rounded-full opacity-20 animate-ping"></div>
+            <div class="relative bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold">
+              500+
+            </div>
+          </div>
+          <div class="text-gray-600 font-medium">Machines Installed</div>
         </div>
-        <div class="p-6" data-aos="fade-up" data-aos-delay="200">
-          <div class="text-4xl font-bold text-primary mb-2"><span id="experienceCount">0</span>+</div>
-          <div class="text-gray-600">Years Experience</div>
+        <div class="p-6 animate-fade-in" data-delay="200">
+          <div class="relative inline-block mb-4">
+            <div class="absolute inset-0 bg-secondary rounded-full opacity-20 animate-ping" style="animation-delay: 0.5s"></div>
+            <div class="relative bg-secondary text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold">
+              30+
+            </div>
+          </div>
+          <div class="text-gray-600 font-medium">Years Experience</div>
         </div>
-        <div class="p-6" data-aos="fade-up" data-aos-delay="300">
-          <div class="text-4xl font-bold text-primary mb-2"><span id="countriesCount">0</span>+</div>
-          <div class="text-gray-600">Countries Served</div>
+        <div class="p-6 animate-fade-in" data-delay="300">
+          <div class="relative inline-block mb-4">
+            <div class="absolute inset-0 bg-primary rounded-full opacity-20 animate-ping" style="animation-delay: 1s"></div>
+            <div class="relative bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold">
+              25+
+            </div>
+          </div>
+          <div class="text-gray-600 font-medium">Countries Served</div>
         </div>
-        <div class="p-6" data-aos="fade-up" data-aos-delay="400">
-          <div class="text-4xl font-bold text-primary mb-2" id="supportText">24/7</div>
-          <div class="text-gray-600">Support Available</div>
+        <div class="p-6 animate-fade-in" data-delay="400">
+          <div class="relative inline-block mb-4">
+            <div class="absolute inset-0 bg-secondary rounded-full opacity-20 animate-ping" style="animation-delay: 1.5s"></div>
+            <div class="relative bg-secondary text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold">
+              24/7
+            </div>
+          </div>
+          <div class="text-gray-600 font-medium">Support Available</div>
         </div>
       </div>
     </div>
@@ -374,16 +514,74 @@
   <section id="products" class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
       <div class="text-center mb-16">
-        <h2 class="text-3xl md:text-4xl font-bold mb-4" data-aos="fade-up">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4 animate-fade-in">
           Our <span class="text-primary">Product</span> Range
         </h2>
-        <p class="text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+        <p class="text-gray-600 max-w-2xl mx-auto animate-fade-in" data-delay="100">
           High-efficiency mixers designed for industrial rubber applications
         </p>
       </div>
       
-      <div id="productsContainer" class="grid md:grid-cols-3 gap-8">
-        <!-- Products will be loaded dynamically -->
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white p-6 rounded-xl shadow-md card-hover transition-all duration-300 animate-slide-up" data-delay="200">
+          <div class="relative overflow-hidden rounded-lg h-48 mb-6">
+            <img src="https://images.unsplash.com/photo-1581093450022-7f44d8f251e8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+                 class="w-full h-full object-cover transition duration-500 hover:scale-110" 
+                 alt="Internal Mixer">
+            <div class="absolute top-4 right-4 bg-primary text-white px-3 py-1 rounded-full text-sm">
+              <i class="fas fa-fire mr-1"></i> Hot
+            </div>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Internal Rubber Mixer</h3>
+          <p class="text-gray-600 mb-4">Advanced batch processing with precise temperature and torque control.</p>
+          <div class="flex justify-between items-center">
+            <a href="#contact" class="inline-block bg-primary text-white px-6 py-2 rounded-full hover:bg-red-800 transition transform hover:scale-105">
+              Enquire Now
+            </a>
+            <button class="text-primary hover:text-red-800 transition" onclick="showProductDetails('internal-mixer')">
+              <i class="fas fa-info-circle text-xl"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="bg-white p-6 rounded-xl shadow-md card-hover transition-all duration-300 animate-slide-up" data-delay="300">
+          <div class="relative overflow-hidden rounded-lg h-48 mb-6">
+            <img src="https://images.unsplash.com/photo-1581094271901-8022df4466f9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+                 class="w-full h-full object-cover transition duration-500 hover:scale-110" 
+                 alt="Kneader">
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Kneader Mixer</h3>
+          <p class="text-gray-600 mb-4">Specialized design for high-viscosity elastomer and polymer blending.</p>
+          <div class="flex justify-between items-center">
+            <a href="#contact" class="inline-block bg-primary text-white px-6 py-2 rounded-full hover:bg-red-800 transition transform hover:scale-105">
+              Enquire Now
+            </a>
+            <button class="text-primary hover:text-red-800 transition" onclick="showProductDetails('kneader-mixer')">
+              <i class="fas fa-info-circle text-xl"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="bg-white p-6 rounded-xl shadow-md card-hover transition-all duration-300 animate-slide-up" data-delay="400">
+          <div class="relative overflow-hidden rounded-lg h-48 mb-6">
+            <img src="https://images.unsplash.com/photo-1581094272269-6a7ba8a0cdba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+                 class="w-full h-full object-cover transition duration-500 hover:scale-110" 
+                 alt="Extruder">
+            <div class="absolute top-4 right-4 bg-secondary text-gray-900 px-3 py-1 rounded-full text-sm">
+              <i class="fas fa-star mr-1"></i> Popular
+            </div>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Twin-Screw Extruder</h3>
+          <p class="text-gray-600 mb-4">High-performance extrusion for efficient shaping of rubber materials.</p>
+          <div class="flex justify-between items-center">
+            <a href="#contact" class="inline-block bg-primary text-white px-6 py-2 rounded-full hover:bg-red-800 transition transform hover:scale-105">
+              Enquire Now
+            </a>
+            <button class="text-primary hover:text-red-800 transition" onclick="showProductDetails('twin-screw-extruder')">
+              <i class="fas fa-info-circle text-xl"></i>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -392,16 +590,62 @@
   <section id="features" class="py-20 bg-white">
     <div class="container mx-auto px-4">
       <div class="text-center mb-16">
-        <h2 class="text-3xl md:text-4xl font-bold mb-4" data-aos="fade-up">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4 animate-fade-in">
           Advanced <span class="text-primary">Features</span>
         </h2>
-        <p class="text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+        <p class="text-gray-600 max-w-2xl mx-auto animate-fade-in" data-delay="100">
           Innovative technologies that set our machines apart
         </p>
       </div>
       
-      <div id="featuresContainer" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- Features will be loaded dynamically -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 hover:border-primary transition animate-slide-up" data-delay="200">
+          <div class="text-primary text-3xl mb-4 animate-wiggle">
+            <i class="fas fa-tachometer-alt"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">Precision Control</h3>
+          <p class="text-gray-600">Advanced PLC systems with touchscreen interfaces for complete process control.</p>
+        </div>
+        
+        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 hover:border-primary transition animate-slide-up" data-delay="300">
+          <div class="text-primary text-3xl mb-4 animate-wiggle" style="animation-delay: 0.5s">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">Energy Efficient</h3>
+          <p class="text-gray-600">Optimized designs reduce power consumption by up to 30% compared to conventional mixers.</p>
+        </div>
+        
+        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 hover:border-primary transition animate-slide-up" data-delay="400">
+          <div class="text-primary text-3xl mb-4 animate-wiggle" style="animation-delay: 1s">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">Safety Systems</h3>
+          <p class="text-gray-600">Multiple safety interlocks and emergency stop systems for operator protection.</p>
+        </div>
+        
+        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 hover:border-primary transition animate-slide-up" data-delay="500">
+          <div class="text-primary text-3xl mb-4">
+            <i class="fas fa-robot"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">Automation Ready</h3>
+          <p class="text-gray-600">Seamless integration with robotic systems for complete production line automation.</p>
+        </div>
+        
+        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 hover:border-primary transition animate-slide-up" data-delay="600">
+          <div class="text-primary text-3xl mb-4">
+            <i class="fas fa-database"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">Data Analytics</h3>
+          <p class="text-gray-600">Cloud-connected for real-time monitoring, predictive maintenance, and production analytics.</p>
+        </div>
+        
+        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 hover:border-primary transition animate-slide-up" data-delay="700">
+          <div class="text-primary text-3xl mb-4">
+            <i class="fas fa-cogs"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">Customizable</h3>
+          <p class="text-gray-600">Tailored solutions to meet specific production requirements and material characteristics.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -410,35 +654,108 @@
   <section id="testimonials" class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
       <div class="text-center mb-16">
-        <h2 class="text-3xl md:text-4xl font-bold mb-4" data-aos="fade-up">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4 animate-fade-in">
           Client <span class="text-primary">Testimonials</span>
         </h2>
-        <p class="text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+        <p class="text-gray-600 max-w-2xl mx-auto animate-fade-in" data-delay="100">
           What our customers say about our products
         </p>
       </div>
       
-      <div id="testimonialsContainer" class="grid md:grid-cols-3 gap-8">
-        <!-- Testimonials will be loaded dynamically -->
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-xl transition animate-slide-up" data-delay="200">
+          <div class="flex items-center mb-4">
+            <div class="text-yellow-400 mr-2">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+          </div>
+          <p class="text-gray-600 mb-6">"The Harshit Engineering Works internal mixer has transformed our production process with its consistent performance and low maintenance."</p>
+          <div class="flex items-center">
+            <div class="bg-gray-200 w-12 h-12 rounded-full overflow-hidden mr-4">
+              <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Client" class="w-full h-full object-cover">
+            </div>
+            <div>
+              <h4 class="font-semibold">Rajesh Patel</h4>
+              <p class="text-sm text-gray-500">ABC Rubber Industries</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-xl transition animate-slide-up" data-delay="300">
+          <div class="flex items-center mb-4">
+            <div class="text-yellow-400 mr-2">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star-half-alt"></i>
+            </div>
+          </div>
+          <p class="text-gray-600 mb-6">"Excellent after-sales support and the machines have exceeded our expectations in terms of durability and performance."</p>
+          <div class="flex items-center">
+            <div class="bg-gray-200 w-12 h-12 rounded-full overflow-hidden mr-4">
+              <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Client" class="w-full h-full object-cover">
+            </div>
+            <div>
+              <h4 class="font-semibold">Priya Sharma</h4>
+              <p class="text-sm text-gray-500">XYZ Polymer Solutions</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-xl transition animate-slide-up" data-delay="400">
+          <div class="flex items-center mb-4">
+            <div class="text-yellow-400 mr-2">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+          </div>
+          <p class="text-gray-600 mb-6">"We've reduced our energy costs by 25% after switching to Harshit Engineering Works equipment while increasing output quality."</p>
+          <div class="flex items-center">
+            <div class="bg-gray-200 w-12 h-12 rounded-full overflow-hidden mr-4">
+              <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Client" class="w-full h-full object-cover">
+            </div>
+            <div>
+              <h4 class="font-semibold">Amit Kumar</h4>
+              <p class="text-sm text-gray-500">Elasto Tech Ltd.</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- CTA Section -->
-  <section class="py-16 bg-primary text-white">
-    <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl md:text-4xl font-bold mb-6" data-aos="fade-up">
+  <section class="py-16 bg-gradient-to-r from-primary to-secondary text-white relative overflow-hidden">
+    <div class="absolute top-0 left-0 w-full h-full opacity-10">
+      <div class="absolute top-10 left-10 text-6xl animate-spin-slow">
+        <i class="fas fa-cog"></i>
+      </div>
+      <div class="absolute bottom-10 right-10 text-8xl animate-spin-slow" style="animation-direction: reverse">
+        <i class="fas fa-industry"></i>
+      </div>
+    </div>
+    
+    <div class="container mx-auto px-4 text-center relative z-10">
+      <h2 class="text-3xl md:text-4xl font-bold mb-6 animate-fade-in">
         Ready to Upgrade Your Mixing Process?
       </h2>
-      <p class="text-xl mb-8 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+      <p class="text-xl mb-8 max-w-2xl mx-auto animate-fade-in" data-delay="100">
         Contact us today for a free consultation and quote
       </p>
-      <div class="flex flex-col sm:flex-row justify-center gap-4" data-aos="fade-up" data-aos-delay="200">
-        <a href="#contact" class="bg-white text-primary font-semibold px-8 py-4 rounded-full hover:bg-gray-100 transition transform hover:scale-105">
+      <div class="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in" data-delay="200">
+        <a href="#contact" class="bg-white text-primary font-semibold px-8 py-4 rounded-full hover:bg-gray-100 transition transform hover:scale-105 animate-pulse-slow">
           Get a Free Quote <i class="fas fa-envelope ml-2"></i>
         </a>
-        <a href="tel:+919876543210" class="bg-transparent border-2 border-white font-semibold px-8 py-4 rounded-full hover:bg-white hover:text-primary transition">
-          Call Now: +91-9876543210
+        <a href="tel:+919811019011" class="bg-transparent border-2 border-white font-semibold px-8 py-4 rounded-full hover:bg-white hover:text-primary transition transform hover:scale-105">
+          Call Now: +91-9811019011
         </a>
       </div>
     </div>
@@ -448,154 +765,123 @@
   <section id="contact" class="py-20 bg-white">
     <div class="container mx-auto px-4">
       <div class="text-center mb-16">
-        <h2 class="text-3xl md:text-4xl font-bold mb-4" data-aos="fade-up">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4 animate-fade-in">
           Contact <span class="text-primary">Us</span>
         </h2>
-        <p class="text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+        <p class="text-gray-600 max-w-2xl mx-auto animate-fade-in" data-delay="100">
           Get in touch with our sales team for more information
         </p>
       </div>
       
       <div class="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
-        <div data-aos="fade-right">
+        <div class="animate-slide-up">
           <h3 class="text-2xl font-semibold mb-6">Our Office</h3>
           
           <div class="space-y-6">
-            <div class="flex items-start">
-              <div class="bg-primary bg-opacity-10 p-3 rounded-full mr-4">
+            <div class="flex items-start hover:transform hover:scale-105 transition">
+              <div class="bg-primary bg-opacity-10 p-3 rounded-full mr-4 animate-pulse-slow">
                 <i class="fas fa-phone text-primary"></i>
               </div>
               <div>
                 <h4 class="font-semibold">Phone</h4>
-                <p class="text-gray-600">+91-9876543210</p>
+                <p class="text-gray-600">+91-9811019011</p>
+                <p class="text-gray-600">+91-9868883132</p>
               </div>
             </div>
             
-            <div class="flex items-start">
-              <div class="bg-primary bg-opacity-10 p-3 rounded-full mr-4">
+            <div class="flex items-start hover:transform hover:scale-105 transition">
+              <div class="bg-primary bg-opacity-10 p-3 rounded-full mr-4 animate-pulse-slow" style="animation-delay: 0.5s">
                 <i class="fas fa-envelope text-primary"></i>
               </div>
               <div>
                 <h4 class="font-semibold">Email</h4>
-                <p class="text-gray-600">sales@mechmix.com</p>
+                <p class="text-gray-600">harshitengineeringworks@gmail.com</p>
+                <p class="text-gray-600">rgupta889@gmail.com</p>
               </div>
             </div>
             
-            <div class="flex items-start">
-              <div class="bg-primary bg-opacity-10 p-3 rounded-full mr-4">
+            <div class="flex items-start hover:transform hover:scale-105 transition">
+              <div class="bg-primary bg-opacity-10 p-3 rounded-full mr-4 animate-pulse-slow" style="animation-delay: 1s">
                 <i class="fas fa-map-marker-alt text-primary"></i>
               </div>
               <div>
                 <h4 class="font-semibold">Address</h4>
-                <p class="text-gray-600">Industrial Area, Phase II</p>
-                <p class="text-gray-600">New Delhi - 110020, India</p>
+                <p class="text-gray-600">C-41, Adhyapak Nagar</p>
+                <p class="text-gray-600">Nangloi Najafgarh Road</p>
+                <p class="text-gray-600">New Delhi - 110041, India</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start hover:transform hover:scale-105 transition">
+              <div class="bg-primary bg-opacity-10 p-3 rounded-full mr-4">
+                <i class="fas fa-clock text-primary"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold">Business Hours</h4>
+                <p class="text-gray-600">Monday - Friday: 9:00 AM - 6:00 PM</p>
+                <p class="text-gray-600">Saturday: 9:00 AM - 2:00 PM</p>
               </div>
             </div>
           </div>
           
-          <div class="mt-12">
-            <h4 class="text-xl font-semibold mb-4">Business Hours</h4>
-            <div class="space-y-2">
-              <div class="flex justify-between">
-                <span class="text-gray-600">Monday - Friday</span>
-                <span class="font-medium">9:00 AM - 6:00 PM</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-gray-600">Saturday</span>
-                <span class="font-medium">10:00 AM - 4:00 PM</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-gray-600">Sunday</span>
-                <span class="font-medium">Closed</span>
-              </div>
+          <!-- Social Media -->
+          <div class="mt-8">
+            <h4 class="font-semibold mb-4">Follow Us</h4>
+            <div class="flex space-x-4">
+              <a href="#" class="bg-gray-100 text-gray-700 w-10 h-10 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition transform hover:scale-110">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" class="bg-gray-100 text-gray-700 w-10 h-10 rounded-full flex items-center justify-center hover:bg-blue-400 hover:text-white transition transform hover:scale-110">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" class="bg-gray-100 text-gray-700 w-10 h-10 rounded-full flex items-center justify-center hover:bg-blue-700 hover:text-white transition transform hover:scale-110">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+              <a href="#" class="bg-gray-100 text-gray-700 w-10 h-10 rounded-full flex items-center justify-center hover:bg-red-600 hover:text-white transition transform hover:scale-110">
+                <i class="fab fa-youtube"></i>
+              </a>
             </div>
           </div>
         </div>
         
-        <div data-aos="fade-left" data-aos-delay="100">
+        <div class="animate-slide-up" data-delay="100">
           <form id="contactForm" class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name *</label>
-                <input type="text" id="name" required 
-                       class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition">
+                <input type="text" id="name" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition" required>
               </div>
               <div>
                 <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-                <input type="email" id="email" required 
-                       class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition">
+                <input type="email" id="email" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition" required>
               </div>
             </div>
             <div>
               <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
-              <input type="tel" id="phone" required 
-                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition">
+              <input type="tel" id="phone" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition" required>
             </div>
             <div>
               <label for="company" class="block text-sm font-medium text-gray-700 mb-1">Company</label>
-              <input type="text" id="company" 
-                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition">
+              <input type="text" id="company" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition">
+            </div>
+            <div>
+              <label for="productInterest" class="block text-sm font-medium text-gray-700 mb-1">Product of Interest</label>
+              <select id="productInterest" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition">
+                <option value="">Select a product</option>
+                <option value="internal-mixer">Internal Rubber Mixer</option>
+                <option value="kneader-mixer">Kneader Mixer</option>
+                <option value="twin-screw-extruder">Twin-Screw Extruder</option>
+                <option value="other">Other</option>
+              </select>
             </div>
             <div>
               <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message *</label>
-              <textarea id="message" rows="4" required 
-                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"></textarea>
+              <textarea id="message" rows="4" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition" required></textarea>
             </div>
-            <div id="contactMessage" class="hidden p-3 rounded-lg text-sm"></div>
-            <button type="submit" class="w-full bg-primary text-white font-semibold px-6 py-3 rounded-lg hover:bg-red-800 transition">
+            <button type="submit" class="w-full bg-primary text-white font-semibold px-6 py-3 rounded-lg hover:bg-red-800 transition transform hover:scale-[1.01]">
               Send Message <i class="fas fa-paper-plane ml-2"></i>
             </button>
           </form>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Dashboard Section (Hidden by default) -->
-  <section id="dashboard" class="hidden py-20 bg-gray-50">
-    <div class="container mx-auto px-4">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl md:text-4xl font-bold mb-4">User Dashboard</h2>
-        <p class="text-gray-600">Welcome back, <span id="dashboardUserName" class="font-semibold text-primary">User</span></p>
-      </div>
-      
-      <div class="grid md:grid-cols-3 gap-8 mb-12">
-        <div class="bg-white p-6 rounded-xl shadow-md">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-xl font-semibold">My Quotes</h3>
-            <i class="fas fa-file-invoice text-3xl text-primary"></i>
-          </div>
-          <p class="text-4xl font-bold text-primary mb-2"><span id="quoteCount">0</span></p>
-          <p class="text-gray-600">Total requests</p>
-        </div>
-        
-        <div class="bg-white p-6 rounded-xl shadow-md">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-xl font-semibold">Saved Products</h3>
-            <i class="fas fa-heart text-3xl text-red-500"></i>
-          </div>
-          <p class="text-4xl font-bold text-primary mb-2"><span id="savedCount">0</span></p>
-          <p class="text-gray-600">Favorites</p>
-        </div>
-        
-        <div class="bg-white p-6 rounded-xl shadow-md">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-xl font-semibold">Messages</h3>
-            <i class="fas fa-envelope text-3xl text-secondary"></i>
-          </div>
-          <p class="text-4xl font-bold text-primary mb-2"><span id="messageCount">0</span></p>
-          <p class="text-gray-600">Unread</p>
-        </div>
-      </div>
-      
-      <div class="bg-white rounded-xl shadow-md overflow-hidden">
-        <div class="p-6 border-b border-gray-200">
-          <h3 class="text-xl font-semibold">Recent Activity</h3>
-        </div>
-        <div class="p-6">
-          <div id="activityList" class="space-y-4">
-            <p class="text-gray-500 text-center py-4">No recent activity</p>
-          </div>
         </div>
       </div>
     </div>
@@ -610,16 +896,19 @@
             <svg class="w-6 h-6 text-primary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
             </svg>
-            MechMix
+            Harshit Engineering Works
           </h3>
-          <p class="text-gray-400 mb-4">
-            Leading manufacturer of industrial rubber mixing equipment since 1990.
-          </p>
-          <div class="flex space-x-4">
-            <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter"></i></a>
-            <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-linkedin-in"></i></a>
-            <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-youtube"></i></a>
+          <p class="text-gray-400 mb-4">Premium rubber mixing solutions since 1993. Quality, reliability, and innovation in every machine.</p>
+          <div class="flex space-x-3">
+            <div class="bg-gray-800 p-2 rounded-full">
+              <i class="fas fa-award text-secondary"></i>
+            </div>
+            <div class="bg-gray-800 p-2 rounded-full">
+              <i class="fas fa-certificate text-secondary"></i>
+            </div>
+            <div class="bg-gray-800 p-2 rounded-full">
+              <i class="fas fa-medal text-secondary"></i>
+            </div>
           </div>
         </div>
         
@@ -630,746 +919,558 @@
             <li><a href="#products" class="text-gray-400 hover:text-white transition">Products</a></li>
             <li><a href="#features" class="text-gray-400 hover:text-white transition">Features</a></li>
             <li><a href="#testimonials" class="text-gray-400 hover:text-white transition">Testimonials</a></li>
+            <li><a href="#contact" class="text-gray-400 hover:text-white transition">Contact</a></li>
           </ul>
         </div>
         
         <div>
-          <h4 class="text-lg font-semibold mb-4">Products</h4>
+          <h4 class="text-lg font-semibold mb-4">Our Products</h4>
           <ul class="space-y-2">
-            <li><a href="#" class="text-gray-400 hover:text-white transition">Internal Mixers</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white transition">Kneader Mixers</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white transition">Twin-Screw Extruders</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white transition">Accessories</a></li>
+            <li><a href="#products" class="text-gray-400 hover:text-white transition">Internal Mixers</a></li>
+            <li><a href="#products" class="text-gray-400 hover:text-white transition">Kneader Mixers</a></li>
+            <li><a href="#products" class="text-gray-400 hover:text-white transition">Twin-Screw Extruders</a></li>
+            <li><a href="#products" class="text-gray-400 hover:text-white transition">Rubber Calenders</a></li>
+            <li><a href="#products" class="text-gray-400 hover:text-white transition">Accessories</a></li>
           </ul>
         </div>
         
         <div>
           <h4 class="text-lg font-semibold mb-4">Newsletter</h4>
-          <p class="text-gray-400 mb-4">Subscribe for updates and offers</p>
+          <p class="text-gray-400 mb-4">Subscribe to get updates on new products and offers.</p>
           <div class="flex">
-            <input type="email" placeholder="Your email" class="bg-gray-800 text-white px-4 py-2 rounded-l-lg w-full outline-none">
+            <input type="email" placeholder="Your email" class="flex-1 bg-gray-800 text-white px-4 py-2 rounded-l-lg outline-none">
             <button class="bg-primary px-4 py-2 rounded-r-lg hover:bg-red-800 transition">
               <i class="fas fa-paper-plane"></i>
             </button>
           </div>
+          <div class="mt-6">
+            <p class="text-gray-400 mb-2">ISO 9001:2015 Certified</p>
+            <p class="text-gray-400">Member of Indian Rubber Manufacturers Association</p>
+          </div>
         </div>
       </div>
       
-      <div class="pt-8 border-t border-gray-800 text-center text-gray-400">
-        <p>&copy; 2024 MechMix Industries. All rights reserved.</p>
+      <div class="border-t border-gray-800 pt-6 text-center text-gray-400">
+        <p>&copy; 1993 - <span id="currentYear"></span> Harshit Engineering Works. All rights reserved.</p>
+        <p class="mt-2">C-41, Adhyapak Nagar, Nangloi Najafgarh Road, New Delhi - 110041</p>
+        <p class="mt-2">Phone: +91-9811019011, +91-9868883132 | Email: harshitengineeringworks@gmail.com</p>
       </div>
     </div>
   </footer>
 
-  <!-- AOS Animation -->
-  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-  
+  <!-- Firebase Configuration -->
   <script>
-    // Initialize AOS
-    AOS.init({
-      duration: 800,
-      once: true,
-      offset: 100
-    });
-
-    // Firebase Configuration
-   const firebaseConfig = {
-    apiKey: "AIzaSyDrVMchNTipBmJW0MowfHS2ucagDhyKBpg",
-    authDomain: "harshit-engineering-work-dd263.firebaseapp.com",
-    projectId: "harshit-engineering-work-dd263",
-    storageBucket: "harshit-engineering-work-dd263.firebasestorage.app",
-    messagingSenderId: "729837485760",
-    appId: "1:729837485760:web:cb02a0994fb4d534153725",
-    measurementId: "G-DY2XR531VZ"
-  };
-
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDrVMchNTipBmJW0MowfHS2ucagDhyKBpg",
+      authDomain: "harshit-engineering-work-dd263.firebaseapp.com",
+      projectId: "harshit-engineering-work-dd263",
+      storageBucket: "harshit-engineering-work-dd263.firebasestorage.app",
+      messagingSenderId: "729837485760",
+      appId: "1:729837485760:web:cb02a0994fb4d534153725",
+      measurementId: "G-DY2XR531VZ"
+    };
 
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
+  </script>
 
-    // Data for dynamic content
-    const productsData = [
-      {
-        id: 1,
-        name: "Internal Rubber Mixer",
-        description: "Advanced batch processing with precise temperature and torque control. Features PLC automation and energy-efficient design.",
-        image: "https://images.unsplash.com/photo-1581093450022-7f44d8f251e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-        price: "Starting from ₹25,00,000"
-      },
-      {
-        id: 2,
-        name: "Kneader Mixer",
-        description: "Specialized design for high-viscosity elastomer and polymer blending. Heavy-duty construction for continuous operation.",
-        image: "https://images.unsplash.com/photo-1581094271901-8022df4466f9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-        price: "Starting from ₹18,50,000"
-      },
-      {
-        id: 3,
-        name: "Twin-Screw Extruder",
-        description: "High-performance extrusion for efficient shaping of rubber materials. Customizable screw configurations available.",
-        image: "https://images.unsplash.com/photo-1581094272269-6a7ba8a0cdba?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-        price: "Starting from ₹32,00,000"
-      }
-    ];
-
-    const featuresData = [
-      {
-        icon: "fas fa-tachometer-alt",
-        title: "Precision Control",
-        description: "Advanced PLC systems with touchscreen interfaces for complete process control and data logging."
-      },
-      {
-        icon: "fas fa-bolt",
-        title: "Energy Efficient",
-        description: "Optimized designs reduce power consumption by up to 30% compared to conventional mixers."
-      },
-      {
-        icon: "fas fa-shield-alt",
-        title: "Safety Systems",
-        description: "Multiple safety interlocks, emergency stop systems, and overload protection for operator safety."
-      },
-      {
-        icon: "fas fa-cogs",
-        title: "Customizable",
-        description: "Tailored solutions to meet specific production requirements and material characteristics."
-      },
-      {
-        icon: "fas fa-history",
-        title: "Low Maintenance",
-        description: "Robust construction with easy-access components for minimal downtime and maintenance."
-      },
-      {
-        icon: "fas fa-chart-line",
-        title: "Smart Monitoring",
-        description: "IoT-enabled remote monitoring and predictive maintenance capabilities."
-      }
-    ];
-
-    const testimonialsData = [
-      {
-        name: "Rajesh Patel",
-        company: "ABC Rubber Industries",
-        rating: 5,
-        text: "The MechMix internal mixer has transformed our production process with its consistent performance and low maintenance requirements.",
-        avatar: "https://randomuser.me/api/portraits/men/32.jpg"
-      },
-      {
-        name: "Priya Sharma",
-        company: "XYZ Polymer Solutions",
-        rating: 4.5,
-        text: "Excellent after-sales support and the machines have exceeded our expectations in terms of durability and performance.",
-        avatar: "https://randomuser.me/api/portraits/women/44.jpg"
-      },
-      {
-        name: "Amit Kumar",
-        company: "Elasto Tech Ltd.",
-        rating: 5,
-        text: "We've reduced our energy costs by 25% after switching to MechMix equipment while increasing output quality significantly.",
-        avatar: "https://randomuser.me/api/portraits/men/75.jpg"
-      }
-    ];
-
+  <!-- Main JavaScript -->
+  <script>
     // DOM Elements
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const dashboardBtn = document.getElementById('dashboardBtn');
     const loginModal = document.getElementById('loginModal');
-    const registerModal = document.getElementById('registerModal');
-    const userDropdown = document.getElementById('userDropdown');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const productsContainer = document.getElementById('productsContainer');
-    const featuresContainer = document.getElementById('featuresContainer');
-    const testimonialsContainer = document.getElementById('testimonialsContainer');
-    const userMenuBtn = document.getElementById('userMenuBtn');
-    const openLoginModal = document.getElementById('openLoginModal');
     const closeLoginModal = document.getElementById('closeLoginModal');
+    const registerModal = document.getElementById('registerModal');
     const closeRegisterModal = document.getElementById('closeRegisterModal');
-    const showRegister = document.getElementById('showRegister');
-    const showLogin = document.getElementById('showLogin');
-    const loginForm = document.getElementById('loginForm');
+    const dashboardModal = document.getElementById('dashboardModal');
+    const closeDashboardModal = document.getElementById('closeDashboardModal');
+    const showRegisterBtn = document.getElementById('showRegisterBtn');
+    const showLoginBtn = document.getElementById('showLoginBtn');
+    const googleLoginBtn = document.getElementById('googleLoginBtn');
+    const facebookLoginBtn = document.getElementById('facebookLoginBtn');
+    const demoLoginBtn = document.getElementById('demoLoginBtn');
+    const emailLoginForm = document.getElementById('emailLoginForm');
     const registerForm = document.getElementById('registerForm');
     const contactForm = document.getElementById('contactForm');
-    const logoutBtn = document.getElementById('logoutBtn');
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const closeMobileMenu = document.getElementById('closeMobileMenu');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const closeMenuBtn = document.getElementById('closeMenuBtn');
     const mobileLoginBtn = document.getElementById('mobileLoginBtn');
-    const dashboard = document.getElementById('dashboard');
-
-    // Current user state
-    let currentUser = null;
-
-    // Initialize dynamic content
-    function initDynamicContent() {
-      // Animated counter for stats
-      animateCounter('machinesCount', 250, 2000);
-      animateCounter('experienceCount', 30, 2000);
-      animateCounter('countriesCount', 15, 2000);
-      
-      // Load products
-      renderProducts();
-      
-      // Load features
-      renderFeatures();
-      
-      // Load testimonials
-      renderTestimonials();
-    }
-
-    // Animate counter
-    function animateCounter(elementId, targetValue, duration) {
-      const element = document.getElementById(elementId);
-      let start = 0;
-      const increment = targetValue / (duration / 16);
-      
-      function updateCounter() {
-        start += increment;
-        if (start < targetValue) {
-          element.textContent = Math.floor(start);
-          requestAnimationFrame(updateCounter);
-        } else {
-          element.textContent = targetValue;
-        }
-      }
-      
-      updateCounter();
-    }
-
-    // Render products
-    function renderProducts() {
-      productsContainer.innerHTML = productsData.map(product => `
-        <div class="bg-white p-6 rounded-xl shadow-md card-hover transition-all duration-300" data-aos="fade-up">
-          <div class="relative overflow-hidden rounded-lg h-48 mb-6">
-            <img src="${product.image}" 
-                 class="w-full h-full object-cover transition duration-500 hover:scale-110" 
-                 alt="${product.name}">
-          </div>
-          <h3 class="text-xl font-semibold mb-2">${product.name}</h3>
-          <p class="text-gray-600 mb-2">${product.description}</p>
-          <p class="text-primary font-bold mb-4">${product.price}</p>
-          <div class="flex space-x-3">
-            <a href="#contact" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-800 transition text-center">
-              Enquire Now
-            </a>
-            <button class="saveProductBtn p-2 text-gray-600 hover:text-primary transition" data-id="${product.id}">
-              <i class="far fa-heart"></i>
-            </button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // Render features
-    function renderFeatures() {
-      featuresContainer.innerHTML = featuresData.map(feature => `
-        <div class="bg-gray-50 p-6 rounded-lg" data-aos="fade-up">
-          <div class="text-primary text-3xl mb-4">
-            <i class="${feature.icon}"></i>
-          </div>
-          <h3 class="text-xl font-semibold mb-3">${feature.title}</h3>
-          <p class="text-gray-600">${feature.description}</p>
-        </div>
-      `).join('');
-    }
-
-    // Render testimonials
-    function renderTestimonials() {
-      testimonialsContainer.innerHTML = testimonialsData.map(testimonial => `
-        <div class="bg-white p-8 rounded-xl shadow-md" data-aos="fade-up">
-          <div class="flex items-center mb-4">
-            ${renderStars(testimonial.rating)}
-          </div>
-          <p class="text-gray-600 mb-6">"${testimonial.text}"</p>
-          <div class="flex items-center">
-            <div class="bg-gray-200 w-12 h-12 rounded-full overflow-hidden mr-4">
-              <img src="${testimonial.avatar}" alt="${testimonial.name}" class="w-full h-full object-cover">
-            </div>
-            <div>
-              <h4 class="font-semibold">${testimonial.name}</h4>
-              <p class="text-sm text-gray-500">${testimonial.company}</p>
-            </div>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // Render star ratings
-    function renderStars(rating) {
-      let stars = '';
-      for (let i = 1; i <= 5; i++) {
-        if (i <= Math.floor(rating)) {
-          stars += '<i class="fas fa-star text-yellow-400"></i>';
-        } else if (i === Math.ceil(rating) && rating % 1 !== 0) {
-          stars += '<i class="fas fa-star-half-alt text-yellow-400"></i>';
-        } else {
-          stars += '<i class="far fa-star text-yellow-400"></i>';
-        }
-      }
-      return `<div class="text-yellow-400 mr-2">${stars}</div>`;
-    }
-
-    // Update UI based on auth state
-    function updateAuthUI(user) {
-      currentUser = user;
-      
-      if (user) {
-        // User is signed in
-        const displayName = user.displayName || user.email.split('@')[0];
-        const shortName = displayName.split(' ')[0];
-        const initial = displayName.charAt(0).toUpperCase();
-        
-        // Update UI elements
-        document.getElementById('userShortName').textContent = shortName;
-        document.getElementById('userName').textContent = displayName;
-        document.getElementById('userEmail').textContent = user.email;
-        document.getElementById('userInitial').textContent = initial;
-        document.getElementById('dashboardUserName').textContent = displayName;
-        
-        // Show user menu, hide login button
-        userMenuBtn.classList.remove('hidden');
-        openLoginModal.classList.add('hidden');
-        
-        // Load user data
-        loadUserData(user.uid);
-      } else {
-        // User is signed out
-        userMenuBtn.classList.add('hidden');
-        openLoginModal.classList.remove('hidden');
-        dashboard.classList.add('hidden');
-        
-        // Show main content
-        document.querySelectorAll('section[id]').forEach(section => {
-          if (section.id !== 'dashboard') {
-            section.classList.remove('hidden');
-          }
-        });
-      }
-    }
-
-    // Load user data from Firestore
-    async function loadUserData(userId) {
-      try {
-        const userDoc = await db.collection('users').doc(userId).get();
-        if (userDoc.exists) {
-          const userData = userDoc.data();
-          
-          // Update dashboard counts
-          document.getElementById('quoteCount').textContent = userData.quotes || 0;
-          document.getElementById('savedCount').textContent = userData.savedProducts || 0;
-          document.getElementById('messageCount').textContent = userData.unreadMessages || 0;
-          
-          // Load activity
-          if (userData.recentActivity) {
-            renderActivity(userData.recentActivity);
-          }
-        }
-      } catch (error) {
-        console.error("Error loading user data:", error);
-      }
-    }
-
-    // Render activity list
-    function renderActivity(activities) {
-      const activityList = document.getElementById('activityList');
-      if (activities.length === 0) {
-        activityList.innerHTML = '<p class="text-gray-500 text-center py-4">No recent activity</p>';
-        return;
-      }
-      
-      activityList.innerHTML = activities.map(activity => `
-        <div class="flex items-start border-b border-gray-100 pb-4 last:border-0 last:pb-0">
-          <div class="bg-primary bg-opacity-10 p-2 rounded-lg mr-4">
-            <i class="${activity.icon} text-primary"></i>
-          </div>
-          <div>
-            <p class="font-medium">${activity.title}</p>
-            <p class="text-sm text-gray-500">${activity.description}</p>
-            <p class="text-xs text-gray-400 mt-1">${activity.time}</p>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // Modal Functions
-    function openModal(modal) {
-      modal.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal(modal) {
-      modal.classList.remove('active');
-      document.body.style.overflow = 'auto';
-    }
-
-    // Event Listeners
-    openLoginModal.addEventListener('click', () => openModal(loginModal));
-    closeLoginModal.addEventListener('click', () => closeModal(loginModal));
-    closeRegisterModal.addEventListener('click', () => closeModal(registerModal));
-    showRegister.addEventListener('click', (e) => {
-      e.preventDefault();
-      closeModal(loginModal);
-      openModal(registerModal);
-    });
-    showLogin.addEventListener('click', (e) => {
-      e.preventDefault();
-      closeModal(registerModal);
-      openModal(loginModal);
-    });
-
-    // Mobile menu
+    const mobileDashboardBtn = document.getElementById('mobileDashboardBtn');
+    const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
+    const newQuoteBtn = document.getElementById('newQuoteBtn');
+    const supportBtn = document.getElementById('supportBtn');
+    
+    // Set current year in footer
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+    
+    // Mobile menu toggle
     mobileMenuBtn.addEventListener('click', () => {
       mobileMenu.classList.remove('hidden');
+      mobileMenu.classList.add('block');
     });
-
-    closeMobileMenu.addEventListener('click', () => {
+    
+    closeMenuBtn.addEventListener('click', () => {
       mobileMenu.classList.add('hidden');
+      mobileMenu.classList.remove('block');
     });
-
-    mobileLoginBtn.addEventListener('click', () => {
-      mobileMenu.classList.add('hidden');
-      openModal(loginModal);
+    
+    // Modal functions
+    function openLoginModal() {
+      loginModal.classList.remove('hidden');
+      loginModal.classList.add('flex');
+      registerModal.classList.add('hidden');
+      registerModal.classList.remove('flex');
+    }
+    
+    function closeLoginModalFunc() {
+      loginModal.classList.add('hidden');
+      loginModal.classList.remove('flex');
+    }
+    
+    function openRegisterModal() {
+      registerModal.classList.remove('hidden');
+      registerModal.classList.add('flex');
+      loginModal.classList.add('hidden');
+      loginModal.classList.remove('flex');
+    }
+    
+    function closeRegisterModalFunc() {
+      registerModal.classList.add('hidden');
+      registerModal.classList.remove('flex');
+    }
+    
+    function openDashboardModal() {
+      dashboardModal.classList.remove('hidden');
+      dashboardModal.classList.add('flex');
+    }
+    
+    function closeDashboardModalFunc() {
+      dashboardModal.classList.add('hidden');
+      dashboardModal.classList.remove('flex');
+    }
+    
+    // Event listeners for modals
+    loginBtn.addEventListener('click', openLoginModal);
+    mobileLoginBtn.addEventListener('click', openLoginModal);
+    closeLoginModal.addEventListener('click', closeLoginModalFunc);
+    
+    showRegisterBtn.addEventListener('click', openRegisterModal);
+    closeRegisterModal.addEventListener('click', closeRegisterModalFunc);
+    
+    showLoginBtn.addEventListener('click', openLoginModal);
+    
+    dashboardBtn.addEventListener('click', openDashboardModal);
+    mobileDashboardBtn.addEventListener('click', openDashboardModal);
+    closeDashboardModal.addEventListener('click', closeDashboardModalFunc);
+    
+    // Close modals when clicking outside
+    window.addEventListener('click', (e) => {
+      if (e.target === loginModal) closeLoginModalFunc();
+      if (e.target === registerModal) closeRegisterModalFunc();
+      if (e.target === dashboardModal) closeDashboardModalFunc();
     });
-
-    // User dropdown
-    userMenuBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      userDropdown.classList.toggle('hidden');
-    });
-
-    // Close dropdown when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!userDropdown.contains(e.target) && !userMenuBtn.contains(e.target)) {
-        userDropdown.classList.add('hidden');
+    
+    // Auth state observer
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        // User is signed in
+        console.log('User logged in:', user.email);
+        
+        // Update UI for logged in state
+        loginBtn.classList.add('hidden');
+        mobileLoginBtn.classList.add('hidden');
+        dashboardBtn.classList.remove('hidden');
+        mobileDashboardBtn.classList.remove('hidden');
+        logoutBtn.classList.remove('hidden');
+        mobileLogoutBtn.classList.remove('hidden');
+        
+        // Update dashboard with user info
+        document.getElementById('dashboardUserName').textContent = `Welcome, ${user.displayName || user.email.split('@')[0]}!`;
+        document.getElementById('dashboardUserEmail').textContent = user.email;
+        
+        // Close login modal if open
+        closeLoginModalFunc();
+        closeRegisterModalFunc();
+        
+        // Show welcome notification
+        showNotification(`Welcome back, ${user.displayName || user.email}!`, 'success');
+        
+      } else {
+        // User is signed out
+        console.log('User logged out');
+        
+        // Update UI for logged out state
+        loginBtn.classList.remove('hidden');
+        mobileLoginBtn.classList.remove('hidden');
+        dashboardBtn.classList.add('hidden');
+        mobileDashboardBtn.classList.add('hidden');
+        logoutBtn.classList.add('hidden');
+        mobileLogoutBtn.classList.add('hidden');
+        
+        // Close dashboard if open
+        closeDashboardModalFunc();
       }
     });
-
-    // Dashboard navigation
-    document.getElementById('dashboardLink').addEventListener('click', (e) => {
-      e.preventDefault();
-      userDropdown.classList.add('hidden');
-      
-      // Hide all sections
-      document.querySelectorAll('section[id]').forEach(section => {
-        section.classList.add('hidden');
-      });
-      
-      // Show dashboard
-      dashboard.classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    // Home navigation
-    document.querySelectorAll('a[href="#home"]').forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        userDropdown.classList.add('hidden');
-        
-        // Show all sections except dashboard
-        document.querySelectorAll('section[id]').forEach(section => {
-          if (section.id !== 'dashboard') {
-            section.classList.remove('hidden');
-          } else {
-            section.classList.add('hidden');
-          }
-        });
-        
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-    });
-
-    // Login form submission
-    loginForm.addEventListener('submit', async (e) => {
+    
+    // Email/password login
+    emailLoginForm.addEventListener('submit', (e) => {
       e.preventDefault();
       
       const email = document.getElementById('loginEmail').value;
       const password = document.getElementById('loginPassword').value;
-      const messageDiv = document.getElementById('loginMessage');
-      const btnText = document.getElementById('loginBtnText');
-      const spinner = document.getElementById('loginSpinner');
       
-      btnText.textContent = 'Signing In...';
-      spinner.classList.remove('hidden');
-      messageDiv.classList.add('hidden');
-      
-      try {
-        const userCredential = await auth.signInWithEmailAndPassword(email, password);
-        messageDiv.classList.remove('hidden');
-        messageDiv.className = 'p-3 rounded-lg text-sm bg-green-100 text-green-700';
-        messageDiv.textContent = 'Login successful!';
-        
-        setTimeout(() => {
-          closeModal(loginModal);
-          loginForm.reset();
-          messageDiv.classList.add('hidden');
-          btnText.textContent = 'Sign In';
-          spinner.classList.add('hidden');
-        }, 1500);
-        
-      } catch (error) {
-        messageDiv.classList.remove('hidden');
-        messageDiv.className = 'p-3 rounded-lg text-sm bg-red-100 text-red-700';
-        
-        switch (error.code) {
-          case 'auth/user-not-found':
-            messageDiv.textContent = 'No account found with this email.';
-            break;
-          case 'auth/wrong-password':
-            messageDiv.textContent = 'Incorrect password.';
-            break;
-          default:
-            messageDiv.textContent = error.message;
-        }
-        
-        btnText.textContent = 'Sign In';
-        spinner.classList.add('hidden');
-      }
+      auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          // Signed in
+          console.log('Signed in with email');
+          showNotification('Successfully logged in!', 'success');
+        })
+        .catch((error) => {
+          console.error('Login error:', error);
+          showNotification(error.message, 'error');
+        });
     });
-
-    // Register form submission
-    registerForm.addEventListener('submit', async (e) => {
+    
+    // Google login
+    googleLoginBtn.addEventListener('click', () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      
+      auth.signInWithPopup(provider)
+        .then((result) => {
+          console.log('Google sign in successful');
+          showNotification('Successfully logged in with Google!', 'success');
+        })
+        .catch((error) => {
+          console.error('Google sign in error:', error);
+          showNotification(error.message, 'error');
+        });
+    });
+    
+    // Facebook login
+    facebookLoginBtn.addEventListener('click', () => {
+      const provider = new firebase.auth.FacebookAuthProvider();
+      
+      auth.signInWithPopup(provider)
+        .then((result) => {
+          console.log('Facebook sign in successful');
+          showNotification('Successfully logged in with Facebook!', 'success');
+        })
+        .catch((error) => {
+          console.error('Facebook sign in error:', error);
+          showNotification(error.message, 'error');
+        });
+    });
+    
+    // Demo login
+    demoLoginBtn.addEventListener('click', () => {
+      // Using a demo account
+      const demoEmail = 'demo@harshitengineering.com';
+      const demoPassword = 'demo123';
+      
+      auth.signInWithEmailAndPassword(demoEmail, demoPassword)
+        .then((userCredential) => {
+          console.log('Demo login successful');
+          showNotification('Welcome to the demo account!', 'success');
+        })
+        .catch((error) => {
+          // If demo account doesn't exist, create it
+          if (error.code === 'auth/user-not-found') {
+            auth.createUserWithEmailAndPassword(demoEmail, demoPassword)
+              .then((userCredential) => {
+                // Update user profile
+                return userCredential.user.updateProfile({
+                  displayName: 'Demo User'
+                });
+              })
+              .then(() => {
+                console.log('Demo account created and logged in');
+                showNotification('Demo account created! Welcome!', 'success');
+              })
+              .catch((error) => {
+                console.error('Demo account creation error:', error);
+                showNotification(error.message, 'error');
+              });
+          } else {
+            console.error('Demo login error:', error);
+            showNotification(error.message, 'error');
+          }
+        });
+    });
+    
+    // Register new account
+    registerForm.addEventListener('submit', (e) => {
       e.preventDefault();
       
-      const firstName = document.getElementById('registerFirstName').value;
-      const lastName = document.getElementById('registerLastName').value;
+      const name = document.getElementById('registerName').value;
+      const company = document.getElementById('registerCompany').value;
       const email = document.getElementById('registerEmail').value;
       const phone = document.getElementById('registerPhone').value;
-      const company = document.getElementById('registerCompany').value;
       const password = document.getElementById('registerPassword').value;
-      const confirmPassword = document.getElementById('registerConfirmPassword').value;
-      const messageDiv = document.getElementById('registerMessage');
-      const btnText = document.getElementById('registerBtnText');
-      const spinner = document.getElementById('registerSpinner');
       
-      // Validate passwords match
-      if (password !== confirmPassword) {
-        messageDiv.classList.remove('hidden');
-        messageDiv.className = 'p-3 rounded-lg text-sm bg-red-100 text-red-700';
-        messageDiv.textContent = 'Passwords do not match.';
-        return;
-      }
-      
-      btnText.textContent = 'Creating Account...';
-      spinner.classList.remove('hidden');
-      messageDiv.classList.add('hidden');
-      
-      try {
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        
-        // Update user profile
-        await userCredential.user.updateProfile({
-          displayName: `${firstName} ${lastName}`
+      auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          // Update user profile
+          return userCredential.user.updateProfile({
+            displayName: name
+          });
+        })
+        .then(() => {
+          // Save additional user data to Firestore
+          return db.collection('users').doc(auth.currentUser.uid).set({
+            name: name,
+            company: company,
+            email: email,
+            phone: phone,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            role: 'customer'
+          });
+        })
+        .then(() => {
+          console.log('Registration successful');
+          showNotification('Account created successfully!', 'success');
+          closeRegisterModalFunc();
+        })
+        .catch((error) => {
+          console.error('Registration error:', error);
+          showNotification(error.message, 'error');
         });
-        
-        // Save additional user data to Firestore
-        await db.collection('users').doc(userCredential.user.uid).set({
-          firstName,
-          lastName,
-          email,
-          phone,
-          company,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          quotes: 0,
-          savedProducts: 0,
-          unreadMessages: 0,
-          recentActivity: []
-        });
-        
-        messageDiv.classList.remove('hidden');
-        messageDiv.className = 'p-3 rounded-lg text-sm bg-green-100 text-green-700';
-        messageDiv.textContent = 'Account created successfully!';
-        
-        setTimeout(() => {
-          closeModal(registerModal);
-          registerForm.reset();
-          messageDiv.classList.add('hidden');
-          btnText.textContent = 'Create Account';
-          spinner.classList.add('hidden');
-        }, 1500);
-        
-      } catch (error) {
-        messageDiv.classList.remove('hidden');
-        messageDiv.className = 'p-3 rounded-lg text-sm bg-red-100 text-red-700';
-        
-        switch (error.code) {
-          case 'auth/email-already-in-use':
-            messageDiv.textContent = 'Email already registered. Please login.';
-            break;
-          case 'auth/weak-password':
-            messageDiv.textContent = 'Password should be at least 6 characters.';
-            break;
-          default:
-            messageDiv.textContent = error.message;
-        }
-        
-        btnText.textContent = 'Create Account';
-        spinner.classList.add('hidden');
-      }
     });
-
+    
+    // Logout
+    logoutBtn.addEventListener('click', () => {
+      auth.signOut()
+        .then(() => {
+          console.log('Signed out successfully');
+          showNotification('Successfully logged out', 'info');
+        })
+        .catch((error) => {
+          console.error('Sign out error:', error);
+        });
+    });
+    
+    mobileLogoutBtn.addEventListener('click', () => {
+      auth.signOut()
+        .then(() => {
+          console.log('Signed out successfully');
+          showNotification('Successfully logged out', 'info');
+          mobileMenu.classList.add('hidden');
+          mobileMenu.classList.remove('block');
+        })
+        .catch((error) => {
+          console.error('Sign out error:', error);
+        });
+    });
+    
     // Contact form submission
-    contactForm.addEventListener('submit', async (e) => {
+    contactForm.addEventListener('submit', (e) => {
       e.preventDefault();
       
       const name = document.getElementById('name').value;
       const email = document.getElementById('email').value;
       const phone = document.getElementById('phone').value;
       const company = document.getElementById('company').value;
+      const productInterest = document.getElementById('productInterest').value;
       const message = document.getElementById('message').value;
-      const messageDiv = document.getElementById('contactMessage');
-      const submitBtn = contactForm.querySelector('button[type="submit"]');
-      const originalText = submitBtn.innerHTML;
       
-      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
-      submitBtn.disabled = true;
-      messageDiv.classList.add('hidden');
+      // Get current user if logged in
+      const userId = auth.currentUser ? auth.currentUser.uid : null;
       
-      try {
-        // Save to Firestore if user is logged in
-        if (currentUser) {
-          await db.collection('enquiries').add({
-            userId: currentUser.uid,
-            userName: currentUser.displayName,
-            userEmail: currentUser.email,
-            name,
-            email,
-            phone,
-            company,
-            message,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-            status: 'new'
-          });
-          
-          // Update user's quote count
-          await db.collection('users').doc(currentUser.uid).update({
-            quotes: firebase.firestore.FieldValue.increment(1),
-            recentActivity: firebase.firestore.FieldValue.arrayUnion({
-              icon: 'fas fa-file-invoice',
-              title: 'New Quote Request',
-              description: `Request for ${company || 'product information'}`,
-              time: new Date().toLocaleDateString()
-            })
-          });
-        }
+      // Save contact form data to Firestore
+      db.collection('contactSubmissions').add({
+        name: name,
+        email: email,
+        phone: phone,
+        company: company,
+        productInterest: productInterest,
+        message: message,
+        userId: userId,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        status: 'new'
+      })
+      .then((docRef) => {
+        console.log('Contact form submitted with ID: ', docRef.id);
+        showNotification('Thank you! Your message has been sent successfully.', 'success');
         
-        // Simulate sending email
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        messageDiv.classList.remove('hidden');
-        messageDiv.className = 'p-3 rounded-lg text-sm bg-green-100 text-green-700';
-        messageDiv.textContent = 'Thank you! Your message has been sent. We\'ll contact you soon.';
-        
+        // Reset form
         contactForm.reset();
         
-        // Reset button after delay
-        setTimeout(() => {
-          submitBtn.innerHTML = originalText;
-          submitBtn.disabled = false;
-        }, 2000);
-        
-      } catch (error) {
-        messageDiv.classList.remove('hidden');
-        messageDiv.className = 'p-3 rounded-lg text-sm bg-red-100 text-red-700';
-        messageDiv.textContent = 'Error sending message. Please try again.';
-        
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-      }
-    });
-
-    // Logout
-    logoutBtn.addEventListener('click', async () => {
-      try {
-        await auth.signOut();
-        userDropdown.classList.add('hidden');
-      } catch (error) {
-        console.error("Logout error:", error);
-      }
-    });
-
-    // Save product to favorites
-    document.addEventListener('click', async (e) => {
-      if (e.target.closest('.saveProductBtn')) {
-        if (!currentUser) {
-          openModal(loginModal);
-          return;
+        // If user is logged in, update their activity in dashboard
+        if (auth.currentUser) {
+          updateUserActivity('Contact form submitted');
         }
-        
-        const btn = e.target.closest('.saveProductBtn');
-        const productId = btn.dataset.id;
-        const icon = btn.querySelector('i');
-        
-        // Toggle icon
-        if (icon.classList.contains('far')) {
-          icon.classList.remove('far');
-          icon.classList.add('fas');
-          icon.style.color = '#b91c1c';
-          
-          // Save to user's favorites in Firestore
-          try {
-            await db.collection('users').doc(currentUser.uid).update({
-              savedProducts: firebase.firestore.FieldValue.increment(1)
-            });
-            
-            // Update UI
-            document.getElementById('savedCount').textContent = 
-              parseInt(document.getElementById('savedCount').textContent) + 1;
-              
-          } catch (error) {
-            console.error("Error saving product:", error);
-          }
-        } else {
-          icon.classList.remove('fas');
-          icon.classList.add('far');
-          icon.style.color = '';
-          
-          // Remove from favorites
-          try {
-            await db.collection('users').doc(currentUser.uid).update({
-              savedProducts: firebase.firestore.FieldValue.increment(-1)
-            });
-            
-            // Update UI
-            document.getElementById('savedCount').textContent = 
-              parseInt(document.getElementById('savedCount').textContent) - 1;
-              
-          } catch (error) {
-            console.error("Error removing product:", error);
-          }
-        }
-      }
+      })
+      .catch((error) => {
+        console.error('Error submitting contact form: ', error);
+        showNotification('Sorry, there was an error sending your message. Please try again.', 'error');
+      });
     });
-
-    // Auth state observer
-    auth.onAuthStateChanged((user) => {
-      updateAuthUI(user);
+    
+    // Dashboard functionality
+    newQuoteBtn.addEventListener('click', () => {
+      closeDashboardModalFunc();
+      document.getElementById('productInterest').value = '';
+      document.getElementById('message').value = 'I would like to request a quote for:';
+      document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+      showNotification('Please fill out the contact form with your quote request details.', 'info');
     });
-
-    // Initialize the application
-    document.addEventListener('DOMContentLoaded', () => {
-      initDynamicContent();
+    
+    supportBtn.addEventListener('click', () => {
+      closeDashboardModalFunc();
+      document.getElementById('message').value = 'I need support with:';
+      document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+      showNotification('Please describe your support request in the message field.', 'info');
+    });
+    
+    // Update user activity in Firestore
+    function updateUserActivity(activity) {
+      if (!auth.currentUser) return;
       
-      // Smooth scrolling for anchor links
-      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-          e.preventDefault();
-          const targetId = this.getAttribute('href');
-          if (targetId === '#') return;
-          
-          const targetElement = document.querySelector(targetId);
-          if (targetElement) {
-            window.scrollTo({
-              top: targetElement.offsetTop - 80,
-              behavior: 'smooth'
-            });
+      db.collection('userActivities').add({
+        userId: auth.currentUser.uid,
+        activity: activity,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      .catch((error) => {
+        console.error('Error updating user activity: ', error);
+      });
+    }
+    
+    // Show product details (example function)
+    function showProductDetails(productId) {
+      const productDetails = {
+        'internal-mixer': {
+          title: 'Internal Rubber Mixer',
+          features: ['Capacity: 50-500L', 'Power: 75-500kW', 'Temperature control: ±1°C', 'PLC control system', 'Safety interlocks']
+        },
+        'kneader-mixer': {
+          title: 'Kneader Mixer',
+          features: ['Capacity: 100-1000L', 'Power: 55-450kW', 'Sigma blade design', 'Jacketed mixing chamber', 'Vacuum capability']
+        },
+        'twin-screw-extruder': {
+          title: 'Twin-Screw Extruder',
+          features: ['Screw diameter: 30-150mm', 'L/D ratio: 24-48', 'Power: 15-300kW', 'Modular barrel design', 'Precision temperature zones']
+        }
+      };
+      
+      const product = productDetails[productId];
+      if (product) {
+        const featuresHtml = product.features.map(feature => `<li>${feature}</li>`).join('');
+        
+        // Create a modal or alert with product details
+        showNotification(`
+          <strong>${product.title}</strong><br>
+          <ul class="mt-2 text-left">${featuresHtml}</ul>
+          <div class="mt-4">
+            <a href="#contact" class="inline-block bg-primary text-white px-4 py-2 rounded text-sm">Request Detailed Specs</a>
+          </div>
+        `, 'info', 8000);
+      }
+    }
+    
+    // Notification system
+    function showNotification(message, type = 'info', duration = 5000) {
+      // Remove existing notifications
+      const existingNotifications = document.querySelectorAll('.notification');
+      existingNotifications.forEach(notif => notif.remove());
+      
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.className = `notification fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg animate-slide-up max-w-sm ${type === 'success' ? 'bg-green-500 text-white' : type === 'error' ? 'bg-red-500 text-white' : type === 'info' ? 'bg-blue-500 text-white' : 'bg-gray-800 text-white'}`;
+      notification.innerHTML = `
+        <div class="flex items-center">
+          <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'} mr-3"></i>
+          <div>${message}</div>
+          <button class="ml-4 text-white hover:text-gray-200" onclick="this.parentElement.parentElement.remove()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      // Auto-remove after duration
+      setTimeout(() => {
+        if (notification.parentElement) {
+          notification.remove();
+        }
+      }, duration);
+    }
+    
+    // Animate counting numbers
+    function animateCounters() {
+      const counters = document.querySelectorAll('.animate-count');
+      
+      counters.forEach(counter => {
+        const target = parseInt(counter.getAttribute('data-target'));
+        const increment = target / 100;
+        let current = 0;
+        
+        const updateCounter = () => {
+          if (current < target) {
+            current += increment;
+            counter.textContent = Math.ceil(current) + (counter.textContent.includes('+') ? '+' : '');
+            setTimeout(updateCounter, 20);
+          } else {
+            counter.textContent = target + (counter.textContent.includes('+') ? '+' : '');
+          }
+        };
+        
+        updateCounter();
+      });
+    }
+    
+    // Initialize animations when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      // Animate elements on scroll
+      const animatedElements = document.querySelectorAll('[data-delay]');
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const delay = entry.target.getAttribute('data-delay') || '0';
+            entry.target.style.animationDelay = `${delay}ms`;
+            entry.target.classList.add('animate-fade-in');
+            
+            // If element has counting numbers, animate them
+            if (entry.target.querySelector('.animate-count')) {
+              animateCounters();
+            }
+            
+            observer.unobserve(entry.target);
           }
         });
-      });
+      }, { threshold: 0.1 });
       
-      // Close modals on ESC key
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          closeModal(loginModal);
-          closeModal(registerModal);
+      animatedElements.forEach(el => observer.observe(el));
+      
+      // Initialize counters in hero section
+      animateCounters();
+    });
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 80,
+            behavior: 'smooth'
+          });
+          
+          // Close mobile menu if open
           mobileMenu.classList.add('hidden');
-          userDropdown.classList.add('hidden');
+          mobileMenu.classList.remove('block');
         }
       });
     });
